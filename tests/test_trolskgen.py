@@ -1,6 +1,5 @@
 import ast
 import datetime as dt
-import enum
 import textwrap
 import zoneinfo
 from dataclasses import dataclass, field
@@ -10,6 +9,7 @@ import pydantic
 import pytest
 
 import trolskgen
+from tests.nested import MyEnum
 from trolskgen import t
 
 
@@ -485,10 +485,6 @@ class Foo:
     def f(self) -> None: ...
 
 
-class MyEnum(enum.Enum):
-    FOO = 1
-
-
 @dataclass
 class Bar:
     a: int
@@ -539,7 +535,7 @@ def test_more_reprs() -> None:
     )
     _eq(
         trolskgen.to_source(MyEnum.FOO),
-        "test_trolskgen.MyEnum.FOO",
+        "nested.MyEnum.FOO",
     )
     _eq(
         trolskgen.to_source(Bar(a=1, b=[2])),

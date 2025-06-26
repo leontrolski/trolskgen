@@ -48,7 +48,7 @@ DONT_PREFIX_WITH_MODULE = {"builtins", "typing"}
 @core.upcast_expr
 def converter_types_and_functions(o: Any, f: core.F) -> ast.AST | None:
     if isinstance(o, type) or inspect.isfunction(o):
-        module_name = o.__module__ + "."
+        module_name = o.__module__.split(".")[-1] + "."
         if o.__module__ in DONT_PREFIX_WITH_MODULE:
             module_name = ""
         return f(templates.t(module_name + o.__qualname__))
