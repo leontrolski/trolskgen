@@ -40,7 +40,7 @@ There are some `if sys.version_info >= (3, 14)` flags around, but it _should_ ju
 
 </details>
 
-`troslkgen` lets you easily build and compose `ast.AST` trees, and thereby easily generate source code. It doesn't handle any formatting concerns, just [`ruff format`](https://github.com/astral-sh/ruff) it afterwards. If you want comments, sorry, instead use a docstring or some `Annotated[]` wizardry.
+`trolskgen` lets you easily build and compose `ast.AST` trees, and thereby easily generate source code. It doesn't handle any formatting concerns, just [`ruff format`](https://github.com/astral-sh/ruff) it afterwards. If you want comments, sorry, instead use a docstring or some `Annotated[]` wizardry.
 
 Quick example:
 
