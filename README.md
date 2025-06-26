@@ -7,7 +7,7 @@ Ergonomic codegen for Python - `pip install trolskgen`.
 
 <br>
 
-From Python 3.14 upwards, there are [template strings](https://peps.python.org/pep-0750/), these make `troslkgen` significantly more succinct.
+From Python 3.14 upwards, there are [template strings](https://peps.python.org/pep-0750/), these make `trolskgen` significantly more succinct.
 
 Where previously you'd do:
 
