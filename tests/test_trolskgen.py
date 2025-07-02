@@ -108,6 +108,22 @@ def test_build_class_simple() -> None:
         """,
     )
 
+    name_ = "Foo"
+    cls = t(
+        """
+        class {name_}:
+            ...
+        """,
+        name_=name_,
+    )
+    _eq(
+        trolskgen.to_source(cls),
+        """
+        class Foo:
+            ...
+        """,
+    )
+
 
 def test_build_class_one_base_class() -> None:
     base = int

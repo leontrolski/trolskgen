@@ -252,6 +252,8 @@ def _downcast(t: type[T], v: ASTValue) -> T:
             v = v.value
         elif isinstance(v, ast.Name):
             v = v.id
+        elif isinstance(v, ast.Constant):
+            v = v.value
         else:
             raise core.TrolskgenError(f"Cannot convert {v_original!r} to {t!r}, got as far as {v!r}")
     return v
