@@ -3,7 +3,7 @@ import datetime as dt
 import textwrap
 import zoneinfo
 from dataclasses import dataclass, field
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 import pydantic
 import pytest
@@ -544,6 +544,18 @@ def test_more_reprs() -> None:
     _eq(
         trolskgen.to_source(Qux(a=1, b=[2])),
         "test_trolskgen.Qux(a=1, b=[2])",
+    )
+    _eq(
+        trolskgen.to_source(Literal[1, 2]),
+        "Literal[1, 2]",
+    )
+    _eq(
+        trolskgen.to_source(pydantic.Field(max_length=1, pattern="x")),
+        "pydantic.Field(max_length=1, pattern='x')",
+    )
+    _eq(
+        trolskgen.to_source(()),
+        "()",
     )
 
 

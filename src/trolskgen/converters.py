@@ -8,7 +8,7 @@ import textwrap
 import zoneinfo
 from dataclasses import MISSING, dataclass, fields, is_dataclass
 from types import NoneType, UnionType
-from typing import Annotated, Any, TypeVar, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Literal, TypeVar, Union, cast, get_args, get_origin
 
 from typing_extensions import TypeIs
 
@@ -97,26 +97,42 @@ def converter_common(o: Any, f: core.F) -> ast.AST | None:
 
 @core.upcast_expr
 def converter_pydantic(o: Any, f: core.F) -> ast.AST | None:
+    import annotated_types
     import pydantic
 
-    if not isinstance(o, pydantic.BaseModel):
-        return None
+    if isinstance(o, pydantic.BaseModel):
+        args = list[ast.AST]()
+        for name, field in o.__class__.model_fields.items():
+            value = getattr(o, name, FIELD_MISSING)
+            if value == field.default:
+                continue
+            if field.default_factory and value == field.default_factory():  # type: ignore[call-arg]
+                continue
+            args.append(f(templates.t("{key}={value}", key=templates.t(name), value=value)))
+        return f(templates.t("{c}({args:*})", c=type(o), args=args))
 
-    args = list[ast.AST]()
-    for name, field in o.__class__.model_fields.items():
-        value = getattr(o, name, FIELD_MISSING)
-        if value == field.default:
-            continue
-        if field.default_factory and value == field.default_factory():  # type: ignore[call-arg]
-            continue
-        args.append(f(templates.t("{key}={value}", key=templates.t(name), value=value)))
-    return f(templates.t("{c}({args:*})", c=type(o), args=args))
+    if isinstance(o, pydantic.fields.FieldInfo):
+        args = list[ast.AST]()
+        for metadata in o.metadata:
+            if isinstance(metadata, annotated_types.MinLen):
+                args.append(f(templates.t("min_length={min_length}", min_length=metadata.min_length)))
+            elif isinstance(metadata, annotated_types.MaxLen):
+                args.append(f(templates.t("max_length={max_length}", max_length=metadata.max_length)))
+            elif hasattr(metadata, "pattern"):
+                args.append(f(templates.t("pattern={pattern}", pattern=metadata.pattern)))
+            else:
+                raise NotImplementedError("Need to handle remainder of pydantic.Field")
+        return f(templates.t("pydantic.Field({args:*})", args=args))
+
+    return None
 
 
 @core.upcast_expr
 def converter_typeform(o: Any, f: core.F) -> ast.AST | None:
     if o is Annotated:
         return f(templates.t("Annotated"))
+    if o is Literal:
+        return f(templates.t("Literal"))
     if (origin := get_origin(o)) is not None:
         if origin is Union or origin is UnionType:
             a, b, *rest = get_args(o)
