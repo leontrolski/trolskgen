@@ -64,6 +64,8 @@ IGNORE_FIELDS = {
     "col_offset",
     "end_lineno",
     "end_col_offset",
+    "n",
+    "s",
 }
 
 for cls in FIELD_MAPS:

@@ -115,7 +115,7 @@ FIELD_MAPS: dict[type[Any] | None, dict[str, Any]] = {
     ast.Call: {"func": ast.expr, "args": list[ast.expr], "keywords": list[ast.keyword]},
     ast.FormattedValue: {"value": ast.expr, "conversion": int, "format_spec": ast.expr | None},
     ast.JoinedStr: {"values": list[ast.expr]},
-    ast.Constant: {"value": object, "kind": str | None, "s": object, "n": object},
+    ast.Constant: {"value": object, "kind": str | None},
     ast.Attribute: {"value": ast.expr, "attr": str},
     ast.Subscript: {"value": ast.expr, "slice": ast.expr},
     ast.Starred: {"value": ast.expr},
