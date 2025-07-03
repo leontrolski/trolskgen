@@ -48,13 +48,12 @@ Quick example:
 import trolskgen
 from trolskgen import t
 
-name = t("f")
 func = t(
     """
     def {name}():
         ...
     """,
-    name=name,
+    name="f",
 )
 trolskgen.to_source(func)
 trolskgen.to_ast(func)
@@ -90,9 +89,9 @@ A more complete example:
 ```python
 import datetime as dt
 
-name = t("MySpecialClass")
+name = "MySpecialClass"
 bases = [int, list]
-field_name = t("d")
+field_name = "d"
 fields = [
     t(
         "a: {type_}",

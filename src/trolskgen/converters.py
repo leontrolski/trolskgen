@@ -254,6 +254,8 @@ def _downcast(t: type[T], v: ASTValue) -> T:
             v = v.id
         elif isinstance(v, ast.Constant):
             v = v.value
+        elif isinstance(v, str) and _is_instance(ast.Name("_"), t):
+            v = ast.Name(id=v)  # actually an upcast, hence the extra check to avoid endless loop
         else:
             raise core.TrolskgenError(f"Cannot convert {v_original!r} to {t!r}, got as far as {v!r}")
     return v

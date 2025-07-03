@@ -64,9 +64,9 @@ def test_config() -> None:
 
 
 def test_error_missing_paren() -> None:
-    name = t("Foo")
+    name = "Foo"
     bases = [int, list]
-    field_name = t("bar")
+    field_name = "bar"
     fields = [
         t("foo: {int}", int=int),
         t("{field_name}: str", field_name=field_name),
@@ -162,9 +162,9 @@ def test_build_class_two_base_classes() -> None:
 
 
 def test_build_class() -> None:
-    name = t("Foo")
+    name = "Foo"
     bases = [int, list]
-    field_name = t("bar")
+    field_name = "bar"
     fields = [
         t("foo: {int}", int=int),
         t("{field_name}: str", field_name=field_name),
@@ -306,7 +306,7 @@ def test_convert_interface() -> None:
 
 
 def test_build_function() -> None:
-    name = t("f")
+    name = "f"
     a = int
     y = t("y: str")
     z = t("z: int = 1")
@@ -385,7 +385,7 @@ def test_build_function() -> None:
 
 
 def test_nested_lambda() -> None:
-    name = t("x")
+    name = "x"
     list_ = t(
         """
         [lambda {name}: 1]
@@ -457,7 +457,7 @@ def test_methods() -> None:
 
 
 def test_methods_and_annotation() -> None:
-    ann = t("""x: {a}""", a=int | str)
+    ann = t("x: {a}", a=int | str)
     g = t(
         """
         def g():
@@ -575,8 +575,12 @@ def test_more_reprs() -> None:
     )
 
 
+def test_nested_attr() -> None:
+    assert trolskgen.to_source(trolskgen.t("{x}: str", x="x")) == "x: str"
+
+
 def test_used_in_readme() -> None:
-    name = t("f")
+    name = "f"
     func = t(
         """
         def {name}():
@@ -603,9 +607,9 @@ def test_used_in_readme() -> None:
     #     ],
     # )
 
-    name = t("MySpecialClass")
+    name = "MySpecialClass"
     bases = [int, list]
-    field_name = t("d")
+    field_name = "d"
     fields = [
         t(
             "a: {type_}",
