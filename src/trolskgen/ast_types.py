@@ -200,6 +200,6 @@ FIELD_MAPS: dict[type[Any] | None, dict[str, Any]] = {
 }
 if sys.version_info >= (3, 14):
     FIELD_MAPS |= {
-        ast.Interpolation: {"value": ast.expr, "str": object, "conversion": int, "format_spec": ast.expr | NoneType},
+        ast.Interpolation: {"value": ast.expr, "str": object, "conversion": int, "format_spec": ast.expr | None},
         ast.TemplateStr: {"values": list[ast.expr]},
     }
