@@ -1,6 +1,6 @@
 # `trolskgen`
 
-Ergonomic codegen for Python - `pip install trolskgen`.
+Ergonomic codegen for Python - `pip install trolskgen`. [Blog post](https://leontrolski.github.io/trolskgen.html) with a motivating example.
 
 <details>
     <summary><em>Note on Python 3.14 template strings.</em></summary>
