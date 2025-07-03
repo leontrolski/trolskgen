@@ -89,6 +89,10 @@ def test_build_field() -> None:
         trolskgen.to_source(t("foo: {int}", int=int)),
         "foo: int",
     )
+    _eq(
+        trolskgen.to_source(t("{x} = 1", x="x")),
+        "x = 1",
+    )
 
 
 def test_build_class_simple() -> None:

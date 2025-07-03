@@ -340,6 +340,11 @@ def _ast_replace(node: ast.AST, map: NameNodeMap) -> None:
                 if (interpolation := map.pop(u)) is not None:
                     v[i] = interpolation
 
+        # Special case to allow passing a str into `t("{x} = y")`
+        match node, name, v:
+            case ast.Assign(), "targets", [ast.Module(body=body)]:
+                v = _strings_to_names(body)
+
         v = _downcast(t, v)
         setattr(node, name, v)
 
@@ -349,3 +354,15 @@ def _ast_replace(node: ast.AST, map: NameNodeMap) -> None:
                 _ast_replace(u, map)
         else:
             _ast_replace(v, map)
+
+
+def _strings_to_names(stmts: list[ast.stmt]) -> list[ast.stmt]:
+    """You can't assign to a str, so jsut upcast to an `ast.Name`."""
+    out = list[ast.stmt]()
+    for stmt in stmts:
+        match stmt:
+            case ast.Expr(value=ast.Constant(value=str(s))):
+                out.append(ast.Expr(value=ast.Name(id=s)))
+            case _:
+                out.append(stmt)
+    return out
