@@ -87,7 +87,7 @@ source = trolskgen.t(
     import sys
     from typing import Any, Literal
 
-    FIELD_MAPS: dict[type[Any], dict[str, Any]] = {FIELD_MAPS}
+    FIELD_MAPS: dict[type[Any] | None, dict[str, Any]] = {FIELD_MAPS}
     if sys.version_info >= (3, 14):
         FIELD_MAPS |= {FIELD_MAPS_3_14_ONWARDS}
     """,

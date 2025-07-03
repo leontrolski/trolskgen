@@ -2,7 +2,7 @@ import ast
 import sys
 from typing import Any, Literal
 
-FIELD_MAPS: dict[type[Any], dict[str, Any]] = {
+FIELD_MAPS: dict[type[Any] | None, dict[str, Any]] = {
     None: {},
     str: {},
     int: {},
