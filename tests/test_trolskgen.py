@@ -550,6 +550,14 @@ def test_more_reprs() -> None:
         "dt.datetime(2022, 1, 23, tzinfo=zoneinfo.ZoneInfo('Europe/London'))",
     )
     _eq(
+        trolskgen.to_source(dt.time(1, 2, 3)),
+        "dt.time(1, 2, 3)",
+    )
+    _eq(
+        trolskgen.to_source(dt.timedelta(seconds=1)),
+        "dt.timedelta(seconds=1)",
+    )
+    _eq(
         trolskgen.to_source(MyEnum.FOO),
         "nested.MyEnum.FOO",
     )

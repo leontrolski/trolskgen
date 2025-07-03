@@ -47,11 +47,13 @@ DONT_PREFIX_WITH_MODULE = {"builtins", "typing"}
 
 @core.upcast_expr
 def converter_types_and_functions(o: Any, f: core.F) -> ast.AST | None:
+    from trolskgen import t
+
     if isinstance(o, type) or inspect.isfunction(o):
         module_name = o.__module__.split(".")[-1] + "."
         if o.__module__ in DONT_PREFIX_WITH_MODULE:
             module_name = ""
-        return f(templates.t(module_name + o.__qualname__))
+        return f(t(module_name + o.__qualname__))
     return None
 
 
@@ -63,12 +65,14 @@ FIELD_MISSING = FieldMissing()
 
 @core.upcast_expr
 def converter_common(o: Any, f: core.F) -> ast.AST | None:
+    from trolskgen import t
+
     if o is dt.UTC:
-        return f(templates.t("dt.UTC"))
+        return f(t("dt.UTC"))
     if isinstance(o, zoneinfo.ZoneInfo):
-        return f(templates.t("zoneinfo.ZoneInfo({key})", key=o.key))
-    if isinstance(o, dt.datetime):
-        parts: list[int | ast.AST] = [o.year, o.month, o.day]
+        return f(t("zoneinfo.ZoneInfo({key})", key=o.key))
+    if isinstance(o, dt.time):
+        parts: list[int | templates.Template] = []
         if o.hour or o.minute or o.second or o.microsecond:
             parts.append(o.hour)
             parts.append(o.minute)
@@ -76,12 +80,33 @@ def converter_common(o: Any, f: core.F) -> ast.AST | None:
         if o.microsecond:
             parts.append(o.microsecond)
         if o.tzinfo is not None:
-            parts.append(f(templates.t("tzinfo={tzinfo}", tzinfo=o.tzinfo)))
-        return f(templates.t("dt.datetime({parts:*})", parts=parts))
+            parts.append(t("tzinfo={tzinfo}", tzinfo=o.tzinfo))
+        return f(t("dt.time({parts:*})", parts=parts))
+    if isinstance(o, dt.datetime):
+        parts = [o.year, o.month, o.day]
+        if o.hour or o.minute or o.second or o.microsecond:
+            parts.append(o.hour)
+            parts.append(o.minute)
+            parts.append(o.second)
+        if o.microsecond:
+            parts.append(o.microsecond)
+        if o.tzinfo is not None:
+            parts.append(t("tzinfo={tzinfo}", tzinfo=o.tzinfo))
+        return f(t("dt.datetime({parts:*})", parts=parts))
     if isinstance(o, dt.date):
-        return f(templates.t("dt.date({year}, {month}, {day})", year=o.year, month=o.month, day=o.day))
+        return f(t("dt.date({year}, {month}, {day})", year=o.year, month=o.month, day=o.day))
+    if isinstance(o, dt.timedelta):
+        parts = []
+        if o.days:
+            parts.append(t("days={days}", days=o.days))
+        if o.seconds:
+            parts.append(t("seconds={seconds}", seconds=o.seconds))
+        if o.microseconds:
+            parts.append(t("microseconds={microseconds}", microseconds=o.microseconds))
+        # TODO: work out if it's eg. an exact number of hours and swap seconds for that
+        return f(t("dt.timedelta({parts:*})", parts=parts))
     if isinstance(o, enum.Enum):
-        return f(templates.t("{enum}.{name}", enum=type(o), name=templates.t(o.name)))
+        return f(t("{enum}.{name}", enum=type(o), name=t(o.name)))
     if is_dataclass(o):
         args = list[ast.AST]()
         for field in fields(o):
@@ -90,8 +115,8 @@ def converter_common(o: Any, f: core.F) -> ast.AST | None:
                 continue
             if field.default_factory != MISSING and value == field.default_factory():
                 continue
-            args.append(f(templates.t("{key}={value}", key=templates.t(field.name), value=value)))
-        return f(templates.t("{c}({args:*})", c=type(o), args=args))
+            args.append(f(t("{key}={value}", key=t(field.name), value=value)))
+        return f(t("{c}({args:*})", c=type(o), args=args))
     return None
 
 
@@ -99,6 +124,7 @@ def converter_common(o: Any, f: core.F) -> ast.AST | None:
 def converter_pydantic(o: Any, f: core.F) -> ast.AST | None:
     import annotated_types
     import pydantic
+    from trolskgen import t
 
     if isinstance(o, pydantic.BaseModel):
         args = list[ast.AST]()
@@ -108,41 +134,43 @@ def converter_pydantic(o: Any, f: core.F) -> ast.AST | None:
                 continue
             if field.default_factory and value == field.default_factory():  # type: ignore[call-arg]
                 continue
-            args.append(f(templates.t("{key}={value}", key=templates.t(name), value=value)))
-        return f(templates.t("{c}({args:*})", c=type(o), args=args))
+            args.append(f(t("{key}={value}", key=t(name), value=value)))
+        return f(t("{c}({args:*})", c=type(o), args=args))
 
     if isinstance(o, pydantic.fields.FieldInfo):
         args = list[ast.AST]()
         for metadata in o.metadata:
             if isinstance(metadata, annotated_types.MinLen):
-                args.append(f(templates.t("min_length={min_length}", min_length=metadata.min_length)))
+                args.append(f(t("min_length={min_length}", min_length=metadata.min_length)))
             elif isinstance(metadata, annotated_types.MaxLen):
-                args.append(f(templates.t("max_length={max_length}", max_length=metadata.max_length)))
+                args.append(f(t("max_length={max_length}", max_length=metadata.max_length)))
             elif hasattr(metadata, "pattern"):
-                args.append(f(templates.t("pattern={pattern}", pattern=metadata.pattern)))
+                args.append(f(t("pattern={pattern}", pattern=metadata.pattern)))
             else:
                 raise NotImplementedError("Need to handle remainder of pydantic.Field")
-        return f(templates.t("pydantic.Field({args:*})", args=args))
+        return f(t("pydantic.Field({args:*})", args=args))
 
     return None
 
 
 @core.upcast_expr
 def converter_typeform(o: Any, f: core.F) -> ast.AST | None:
+    from trolskgen import t
+
     if o is Annotated:
-        return f(templates.t("Annotated"))
+        return f(t("Annotated"))
     if o is Literal:
-        return f(templates.t("Literal"))
+        return f(t("Literal"))
     if (origin := get_origin(o)) is not None:
         if origin is Union or origin is UnionType:
             a, b, *rest = get_args(o)
-            union = f(templates.t("{a} | {b}", a=a, b=b))
+            union = f(t("{a} | {b}", a=a, b=b))
             while rest:
                 b, *rest = rest
-                union = f(templates.t("{a} | {b}", a=union, b=f(b)))
+                union = f(t("{a} | {b}", a=union, b=f(b)))
             return union
         slice = [f(arg) for arg in get_args(o)]
-        return f(templates.t("{a}[{b:*}]", a=origin, b=slice))
+        return f(t("{a}[{b:*}]", a=origin, b=slice))
 
     return None
 

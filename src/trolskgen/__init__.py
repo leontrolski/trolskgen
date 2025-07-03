@@ -5,3 +5,4 @@ from trolskgen.core import TrolskgenError as TrolskgenError
 from trolskgen.core import to_ast as to_ast
 from trolskgen.core import to_source as to_source
 from trolskgen.templates import t as t
+from trolskgen.templates import Template as Template
