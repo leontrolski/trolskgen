@@ -4,8 +4,6 @@ from pathlib import Path
 from types import NoneType, UnionType
 from typing import Any, Literal, Union, get_args, get_origin, get_type_hints
 
-import trolskgen
-
 # Uncomment this to regenerate `ast_pyi.py` - note some edits have been made
 # from mypy import typeshed
 # AST_TYPES_PYI = Path(next(iter(typeshed.__path__._path))) / "stdlib/ast.pyi"
@@ -16,6 +14,7 @@ import trolskgen
 #     )
 # )
 import ast_pyi as ast
+import trolskgen
 
 PATH = Path("src/trolskgen/ast_types.py")
 FIELD_MAPS: dict[type[Any], dict[str, Any]] = {

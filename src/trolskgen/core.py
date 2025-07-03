@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import subprocess
 from dataclasses import dataclass, field
 from functools import cache, partial, wraps
 from typing import Any, Callable, Protocol, runtime_checkable
@@ -86,5 +87,22 @@ def to_ast(o: Any, *, config: Config | None = None) -> ast.AST:
     raise TrolskgenError(f"No converter matchers: {o!r}")
 
 
-def to_source(o: Any, *, config: Config | None = None) -> str:
-    return ast.unparse(to_ast(o, config=config))
+def sh(cmd: list[str], stdin: str) -> str:
+    result = subprocess.run(
+        cmd,
+        input=stdin,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    return result.stdout
+
+
+def to_source(o: Any, *, config: Config | None = None, ruff_format: bool = False) -> str:
+    source = ast.unparse(to_ast(o, config=config))
+    if ruff_format:
+        source = sh(["ruff", "format", "-"], source)
+        source = sh(["ruff", "check", "-e", "--fix", "-"], source)
+        source = sh(["ruff", "check", "-e", "--select", "I", "--fix", "-"], source)
+    return source

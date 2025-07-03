@@ -14,7 +14,7 @@ from trolskgen import t
 
 
 def _eq(a: str, b: str) -> None:
-    assert a == textwrap.dedent(b).strip()
+    assert a.strip() == textwrap.dedent(b).strip()
 
 
 def test_config() -> None:
@@ -656,5 +656,25 @@ def test_used_in_readme() -> None:
 
             def inc(self) -> None:
                 self.d += dt.timedelta(days=1)
+        """,
+    )
+
+
+def test_ruff_format() -> None:
+    template = t("""
+        import time
+        import datetime as dt
+        import subprocess
+        def f(): return dt.datetime(time)
+    """)
+    _eq(
+        trolskgen.to_source(template, ruff_format=True),
+        """
+        import datetime as dt
+        import time
+
+
+        def f():
+            return dt.datetime(time)
         """,
     )

@@ -124,6 +124,7 @@ def converter_common(o: Any, f: core.F) -> ast.AST | None:
 def converter_pydantic(o: Any, f: core.F) -> ast.AST | None:
     import annotated_types
     import pydantic
+
     from trolskgen import t
 
     if isinstance(o, pydantic.BaseModel):

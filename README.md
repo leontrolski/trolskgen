@@ -149,7 +149,7 @@ _This is redundant as of Python 3.14 - see above._
 | Converting to AST/source|
 |---|
 | `trolskgen.to_ast(o: Any, *, config: Config) -> ast.AST` |
-| `trolskgen.to_source(o: Any, *, config: Config) -> str` |
+| `trolskgen.to_source(o: Any, *, config: Config, ruff_format: bool) -> str` |
 
 Try to convert `o` into an `ast.AST`/`str` representation.
 
@@ -177,7 +177,7 @@ The following are special cases for the value of `o`:
 - `Annotated`, `T | U`, etc.
 - `pydantic.BaseModel`
 
-_Note that in conjunction with `ruff`, we have a decent pretty printer that you can use for test diffs etc._
+If you have `ruff` installed, you can call with `ruff_format=True`.
 
 We can add our own classes/overrides using:
 
