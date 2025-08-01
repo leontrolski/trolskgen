@@ -689,3 +689,7 @@ def test_union() -> None:
         trolskgen.to_source(t("int") | str),
         "int | str",
     )
+    _eq(
+        trolskgen.to_source(int | None),
+        "int | None",
+    )
