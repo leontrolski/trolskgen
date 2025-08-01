@@ -6,7 +6,7 @@ from string import Formatter
 
 if sys.version_info >= (3, 14):
     from string import templatelib
-from typing import Any, Self
+from typing import Any, Self, Union
 
 
 class TemplateError(RuntimeError): ...
@@ -22,6 +22,9 @@ class Interpolation:
 @dataclass
 class Template:
     parts: list[str | Interpolation]
+
+    def __or__(self, value: Any) -> type[Any]:
+        return Union[self, value]  # type: ignore[return-value]
 
     @classmethod
     def from_str(cls, s: str, **kwargs: Any) -> Self:

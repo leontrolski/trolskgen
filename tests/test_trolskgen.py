@@ -682,3 +682,10 @@ def test_ruff_format() -> None:
             return dt.datetime(time)
         """,
     )
+
+
+def test_union() -> None:
+    _eq(
+        trolskgen.to_source(t("int") | str),
+        "int | str",
+    )
