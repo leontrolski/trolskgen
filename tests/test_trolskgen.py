@@ -693,3 +693,10 @@ def test_union() -> None:
         trolskgen.to_source(int | None),
         "int | None",
     )
+
+
+def test_annotated() -> None:
+    _eq(
+        trolskgen.to_source(Annotated[None, "foo"]),
+        "Annotated[None, 'foo']",
+    )

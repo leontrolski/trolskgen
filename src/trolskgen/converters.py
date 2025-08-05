@@ -163,14 +163,15 @@ def converter_typeform(o: Any, f: core.F) -> ast.AST | None:
     if o is Literal:
         return f(t("Literal"))
     if (origin := get_origin(o)) is not None:
+        args = [None if arg is NoneType else arg for arg in get_args(o)]
         if origin is Union or origin is UnionType:
-            a, b, *rest = [None if arg is NoneType else arg for arg in get_args(o)]
+            a, b, *rest = args
             union = f(t("{a} | {b}", a=a, b=b))
             while rest:
                 b, *rest = rest
                 union = f(t("{a} | {b}", a=union, b=f(b)))
             return union
-        slice = [f(arg) for arg in get_args(o)]
+        slice = [f(arg) for arg in args]
         return f(t("{a}[{b:*}]", a=origin, b=slice))
 
     return None
