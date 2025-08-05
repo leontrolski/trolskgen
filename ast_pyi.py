@@ -1,4 +1,4 @@
-#Copy of /Users/oli.russell/src/trolskgen/.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/ast.pyi
+# Copy of /Users/oli.russell/src/trolskgen/.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/ast.pyi
 
 from __future__ import annotations
 import os
@@ -9,6 +9,7 @@ from _ast import (
     PyCF_ONLY_AST as PyCF_ONLY_AST,
     PyCF_TYPE_COMMENTS as PyCF_TYPE_COMMENTS,
 )
+
 # from _typeshed import ReadableBuffer, Unused
 from collections.abc import Iterable, Iterator
 from typing import Any, ClassVar, Generic, Literal, TypedDict, TypeVar as _TypeVar, overload
@@ -26,12 +27,14 @@ _Identifier: typing_extensions.TypeAlias = str
 # Used for node end positions in constructor keyword arguments
 _EndPositionT = typing_extensions.TypeVar("_EndPositionT", int, int | None, default=int | None)
 
+
 # Corresponds to the names in the `_attributes` class variable which is non-empty in certain AST nodes
 class _Attributes(TypedDict, Generic[_EndPositionT], total=False):
     lineno: int
     col_offset: int
     end_lineno: _EndPositionT
     end_col_offset: _EndPositionT
+
 
 # The various AST classes are implemented in C, and imported from _ast at runtime,
 # but they consider themselves to live in the ast module,
@@ -45,9 +48,12 @@ class AST:
         _field_types: ClassVar[dict[str, Any]]
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self) -> Self: ...
 
+
 class mod(AST): ...
+
 
 class Module(mod):
     if sys.version_info >= (3, 10):
@@ -55,33 +61,44 @@ class Module(mod):
     body: list[stmt]
     type_ignores: list[TypeIgnore]
     if sys.version_info >= (3, 13):
+
         def __init__(self, body: list[stmt] = ..., type_ignores: list[TypeIgnore] = ...) -> None: ...
     else:
+
         def __init__(self, body: list[stmt], type_ignores: list[TypeIgnore]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, body: list[stmt] = ..., type_ignores: list[TypeIgnore] = ...) -> Self: ...
+
 
 class Interactive(mod):
     if sys.version_info >= (3, 10):
         __match_args__ = ("body",)
     body: list[stmt]
     if sys.version_info >= (3, 13):
+
         def __init__(self, body: list[stmt] = ...) -> None: ...
     else:
+
         def __init__(self, body: list[stmt]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, body: list[stmt] = ...) -> Self: ...
+
 
 class Expression(mod):
     if sys.version_info >= (3, 10):
         __match_args__ = ("body",)
     body: expr
+
     def __init__(self, body: expr) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, body: expr = ...) -> Self: ...
+
 
 class FunctionType(mod):
     if sys.version_info >= (3, 10):
@@ -89,25 +106,32 @@ class FunctionType(mod):
     argtypes: list[expr]
     returns: expr
     if sys.version_info >= (3, 13):
+
         @overload
         def __init__(self, argtypes: list[expr], returns: expr) -> None: ...
         @overload
         def __init__(self, argtypes: list[expr] = ..., *, returns: expr) -> None: ...
     else:
+
         def __init__(self, argtypes: list[expr], returns: expr) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, argtypes: list[expr] = ..., returns: expr = ...) -> Self: ...
+
 
 class stmt(AST):
     lineno: int
     col_offset: int
     end_lineno: int | None
     end_col_offset: int | None
+
     def __init__(self, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class FunctionDef(stmt):
     if sys.version_info >= (3, 12):
@@ -123,6 +147,7 @@ class FunctionDef(stmt):
     if sys.version_info >= (3, 12):
         type_params: list[type_param]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             name: _Identifier,
@@ -135,6 +160,7 @@ class FunctionDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     elif sys.version_info >= (3, 12):
+
         @overload
         def __init__(
             self,
@@ -161,6 +187,7 @@ class FunctionDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self,
             name: _Identifier,
@@ -173,6 +200,7 @@ class FunctionDef(stmt):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -184,6 +212,7 @@ class FunctionDef(stmt):
             type_comment: str | None = ...,
             type_params: list[type_param] = ...,
         ) -> Self: ...
+
 
 class AsyncFunctionDef(stmt):
     if sys.version_info >= (3, 12):
@@ -199,6 +228,7 @@ class AsyncFunctionDef(stmt):
     if sys.version_info >= (3, 12):
         type_params: list[type_param]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             name: _Identifier,
@@ -211,6 +241,7 @@ class AsyncFunctionDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     elif sys.version_info >= (3, 12):
+
         @overload
         def __init__(
             self,
@@ -237,6 +268,7 @@ class AsyncFunctionDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self,
             name: _Identifier,
@@ -249,6 +281,7 @@ class AsyncFunctionDef(stmt):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -260,6 +293,7 @@ class AsyncFunctionDef(stmt):
             type_comment: str | None,
             type_params: list[type_param],
         ) -> Self: ...
+
 
 class ClassDef(stmt):
     if sys.version_info >= (3, 12):
@@ -274,6 +308,7 @@ class ClassDef(stmt):
     if sys.version_info >= (3, 12):
         type_params: list[type_param]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             name: _Identifier,
@@ -285,6 +320,7 @@ class ClassDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     elif sys.version_info >= (3, 12):
+
         def __init__(
             self,
             name: _Identifier,
@@ -296,6 +332,7 @@ class ClassDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self,
             name: _Identifier,
@@ -307,6 +344,7 @@ class ClassDef(stmt):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -319,26 +357,34 @@ class ClassDef(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 class Return(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("value",)
     value: expr | None
+
     def __init__(self, value: expr | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: expr | None = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Delete(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("targets",)
     targets: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(self, targets: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, targets: list[expr], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, targets: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Assign(stmt):
     if sys.version_info >= (3, 10):
@@ -347,45 +393,68 @@ class Assign(stmt):
     value: expr
     type_comment: str | None
     if sys.version_info >= (3, 13):
+
         @overload
         def __init__(
             self, targets: list[expr], value: expr, type_comment: str | None = None, **kwargs: Unpack[_Attributes]
         ) -> None: ...
         @overload
         def __init__(
-            self, targets: list[expr] = ..., *, value: expr, type_comment: str | None = None, **kwargs: Unpack[_Attributes]
+            self,
+            targets: list[expr] = ...,
+            *,
+            value: expr,
+            type_comment: str | None = None,
+            **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self, targets: list[expr], value: expr, type_comment: str | None = None, **kwargs: Unpack[_Attributes]
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
-            self, *, targets: list[expr] = ..., value: expr = ..., type_comment: str | None = ..., **kwargs: Unpack[_Attributes]
+            self,
+            *,
+            targets: list[expr] = ...,
+            value: expr = ...,
+            type_comment: str | None = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 if sys.version_info >= (3, 12):
+
     class TypeAlias(stmt):
         __match_args__ = ("name", "type_params", "value")
         name: Name
         type_params: list[type_param]
         value: expr
         if sys.version_info >= (3, 13):
+
             @overload
             def __init__(
                 self, name: Name, type_params: list[type_param], value: expr, **kwargs: Unpack[_Attributes[int]]
             ) -> None: ...
             @overload
             def __init__(
-                self, name: Name, type_params: list[type_param] = ..., *, value: expr, **kwargs: Unpack[_Attributes[int]]
+                self,
+                name: Name,
+                type_params: list[type_param] = ...,
+                *,
+                value: expr,
+                **kwargs: Unpack[_Attributes[int]],
             ) -> None: ...
         else:
+
             def __init__(
                 self, name: Name, type_params: list[type_param], value: expr, **kwargs: Unpack[_Attributes[int]]
             ) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self,
                 *,
@@ -395,17 +464,20 @@ if sys.version_info >= (3, 12):
                 **kwargs: Unpack[_Attributes[int]],
             ) -> Self: ...
 
+
 class AugAssign(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("target", "op", "value")
     target: Name | Attribute | Subscript
     op: operator
     value: expr
+
     def __init__(
         self, target: Name | Attribute | Subscript, op: operator, value: expr, **kwargs: Unpack[_Attributes]
     ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -415,6 +487,7 @@ class AugAssign(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 class AnnAssign(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("target", "annotation", "value", "simple")
@@ -422,6 +495,7 @@ class AnnAssign(stmt):
     annotation: expr
     value: expr | None
     simple: int
+
     @overload
     def __init__(
         self,
@@ -443,6 +517,7 @@ class AnnAssign(stmt):
     ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -453,6 +528,7 @@ class AnnAssign(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 class For(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("target", "iter", "body", "orelse", "type_comment")
@@ -462,6 +538,7 @@ class For(stmt):
     orelse: list[stmt]
     type_comment: str | None
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             target: expr,
@@ -472,6 +549,7 @@ class For(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self,
             target: expr,
@@ -483,6 +561,7 @@ class For(stmt):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -493,6 +572,7 @@ class For(stmt):
             type_comment: str | None = ...,
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class AsyncFor(stmt):
     if sys.version_info >= (3, 10):
@@ -503,6 +583,7 @@ class AsyncFor(stmt):
     orelse: list[stmt]
     type_comment: str | None
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             target: expr,
@@ -513,6 +594,7 @@ class AsyncFor(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self,
             target: expr,
@@ -524,6 +606,7 @@ class AsyncFor(stmt):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -535,6 +618,7 @@ class AsyncFor(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 class While(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("test", "body", "orelse")
@@ -542,14 +626,20 @@ class While(stmt):
     body: list[stmt]
     orelse: list[stmt]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self, test: expr, body: list[stmt] = ..., orelse: list[stmt] = ..., **kwargs: Unpack[_Attributes]
         ) -> None: ...
     else:
+
         def __init__(self, test: expr, body: list[stmt], orelse: list[stmt], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, test: expr, body: list[stmt], orelse: list[stmt], **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, test: expr, body: list[stmt], orelse: list[stmt], **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 class If(stmt):
     if sys.version_info >= (3, 10):
@@ -558,16 +648,20 @@ class If(stmt):
     body: list[stmt]
     orelse: list[stmt]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self, test: expr, body: list[stmt] = ..., orelse: list[stmt] = ..., **kwargs: Unpack[_Attributes]
         ) -> None: ...
     else:
+
         def __init__(self, test: expr, body: list[stmt], orelse: list[stmt], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, test: expr = ..., body: list[stmt] = ..., orelse: list[stmt] = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class With(stmt):
     if sys.version_info >= (3, 10):
@@ -576,6 +670,7 @@ class With(stmt):
     body: list[stmt]
     type_comment: str | None
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             items: list[withitem] = ...,
@@ -584,11 +679,17 @@ class With(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
-            self, items: list[withitem], body: list[stmt], type_comment: str | None = None, **kwargs: Unpack[_Attributes]
+            self,
+            items: list[withitem],
+            body: list[stmt],
+            type_comment: str | None = None,
+            **kwargs: Unpack[_Attributes],
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -597,6 +698,7 @@ class With(stmt):
             type_comment: str | None = ...,
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class AsyncWith(stmt):
     if sys.version_info >= (3, 10):
@@ -605,6 +707,7 @@ class AsyncWith(stmt):
     body: list[stmt]
     type_comment: str | None
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             items: list[withitem] = ...,
@@ -613,11 +716,17 @@ class AsyncWith(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
-            self, items: list[withitem], body: list[stmt], type_comment: str | None = None, **kwargs: Unpack[_Attributes]
+            self,
+            items: list[withitem],
+            body: list[stmt],
+            type_comment: str | None = None,
+            **kwargs: Unpack[_Attributes],
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -627,30 +736,41 @@ class AsyncWith(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 if sys.version_info >= (3, 10):
+
     class Match(stmt):
         __match_args__ = ("subject", "cases")
         subject: expr
         cases: list[match_case]
         if sys.version_info >= (3, 13):
+
             def __init__(self, subject: expr, cases: list[match_case] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
         else:
+
             def __init__(self, subject: expr, cases: list[match_case], **kwargs: Unpack[_Attributes]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self, *, subject: expr = ..., cases: list[match_case] = ..., **kwargs: Unpack[_Attributes]
             ) -> Self: ...
+
 
 class Raise(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("exc", "cause")
     exc: expr | None
     cause: expr | None
+
     def __init__(self, exc: expr | None = None, cause: expr | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, exc: expr | None = ..., cause: expr | None = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, exc: expr | None = ..., cause: expr | None = ..., **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 class Try(stmt):
     if sys.version_info >= (3, 10):
@@ -660,6 +780,7 @@ class Try(stmt):
     orelse: list[stmt]
     finalbody: list[stmt]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             body: list[stmt] = ...,
@@ -669,6 +790,7 @@ class Try(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         def __init__(
             self,
             body: list[stmt],
@@ -679,6 +801,7 @@ class Try(stmt):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -689,7 +812,9 @@ class Try(stmt):
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
 
+
 if sys.version_info >= (3, 11):
+
     class TryStar(stmt):
         __match_args__ = ("body", "handlers", "orelse", "finalbody")
         body: list[stmt]
@@ -697,6 +822,7 @@ if sys.version_info >= (3, 11):
         orelse: list[stmt]
         finalbody: list[stmt]
         if sys.version_info >= (3, 13):
+
             def __init__(
                 self,
                 body: list[stmt] = ...,
@@ -706,6 +832,7 @@ if sys.version_info >= (3, 11):
                 **kwargs: Unpack[_Attributes],
             ) -> None: ...
         else:
+
             def __init__(
                 self,
                 body: list[stmt],
@@ -716,6 +843,7 @@ if sys.version_info >= (3, 11):
             ) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self,
                 *,
@@ -726,27 +854,35 @@ if sys.version_info >= (3, 11):
                 **kwargs: Unpack[_Attributes],
             ) -> Self: ...
 
+
 class Assert(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("test", "msg")
     test: expr
     msg: expr | None
+
     def __init__(self, test: expr, msg: expr | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, test: expr, msg: expr | None, **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Import(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("names",)
     names: list[alias]
     if sys.version_info >= (3, 13):
+
         def __init__(self, names: list[alias] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, names: list[alias], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, names: list[alias] = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class ImportFrom(stmt):
     if sys.version_info >= (3, 10):
@@ -755,71 +891,98 @@ class ImportFrom(stmt):
     names: list[alias]
     level: int
     if sys.version_info >= (3, 13):
+
         @overload
-        def __init__(self, module: str | None, names: list[alias], level: int, **kwargs: Unpack[_Attributes]) -> None: ...
+        def __init__(
+            self, module: str | None, names: list[alias], level: int, **kwargs: Unpack[_Attributes]
+        ) -> None: ...
         @overload
         def __init__(
             self, module: str | None = None, names: list[alias] = ..., *, level: int, **kwargs: Unpack[_Attributes]
         ) -> None: ...
     else:
+
         @overload
-        def __init__(self, module: str | None, names: list[alias], level: int, **kwargs: Unpack[_Attributes]) -> None: ...
+        def __init__(
+            self, module: str | None, names: list[alias], level: int, **kwargs: Unpack[_Attributes]
+        ) -> None: ...
         @overload
         def __init__(
             self, module: str | None = None, *, names: list[alias], level: int, **kwargs: Unpack[_Attributes]
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, module: str | None = ..., names: list[alias] = ..., level: int = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class Global(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("names",)
     names: list[_Identifier]
     if sys.version_info >= (3, 13):
+
         def __init__(self, names: list[_Identifier] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, names: list[_Identifier], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, names: list[_Identifier], **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Nonlocal(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("names",)
     names: list[_Identifier]
     if sys.version_info >= (3, 13):
+
         def __init__(self, names: list[_Identifier] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, names: list[_Identifier], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, names: list[_Identifier] = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Expr(stmt):
     if sys.version_info >= (3, 10):
         __match_args__ = ("value",)
     value: expr
+
     def __init__(self, value: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
 
+
 class Pass(stmt): ...
+
+
 class Break(stmt): ...
+
+
 class Continue(stmt): ...
+
 
 class expr(AST):
     lineno: int
     col_offset: int
     end_lineno: int | None
     end_col_offset: int | None
+
     def __init__(self, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class BoolOp(expr):
     if sys.version_info >= (3, 10):
@@ -827,22 +990,29 @@ class BoolOp(expr):
     op: boolop
     values: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(self, op: boolop, values: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, op: boolop, values: list[expr], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, op: boolop = ..., values: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class NamedExpr(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("target", "value")
     target: Name
     value: expr
+
     def __init__(self, target: Name, value: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, target: Name = ..., value: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class BinOp(expr):
     if sys.version_info >= (3, 10):
@@ -850,32 +1020,41 @@ class BinOp(expr):
     left: expr
     op: operator
     right: expr
+
     def __init__(self, left: expr, op: operator, right: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, left: expr = ..., op: operator = ..., right: expr = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class UnaryOp(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("op", "operand")
     op: unaryop
     operand: expr
+
     def __init__(self, op: unaryop, operand: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, op: unaryop = ..., operand: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Lambda(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("args", "body")
     args: arguments
     body: expr
+
     def __init__(self, args: arguments, body: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, args: arguments = ..., body: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class IfExp(expr):
     if sys.version_info >= (3, 10):
@@ -883,12 +1062,15 @@ class IfExp(expr):
     test: expr
     body: expr
     orelse: expr
+
     def __init__(self, test: expr, body: expr, orelse: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, test: expr = ..., body: expr = ..., orelse: expr = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class Dict(expr):
     if sys.version_info >= (3, 10):
@@ -896,26 +1078,36 @@ class Dict(expr):
     keys: list[expr | None]
     values: list[expr]
     if sys.version_info >= (3, 13):
-        def __init__(self, keys: list[expr | None] = ..., values: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
+
+        def __init__(
+            self, keys: list[expr | None] = ..., values: list[expr] = ..., **kwargs: Unpack[_Attributes]
+        ) -> None: ...
     else:
+
         def __init__(self, keys: list[expr | None], values: list[expr], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, keys: list[expr | None] = ..., values: list[expr] = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class Set(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("elts",)
     elts: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(self, elts: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, elts: list[expr], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, elts: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class ListComp(expr):
     if sys.version_info >= (3, 10):
@@ -923,14 +1115,18 @@ class ListComp(expr):
     elt: expr
     generators: list[comprehension]
     if sys.version_info >= (3, 13):
+
         def __init__(self, elt: expr, generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, elt: expr, generators: list[comprehension], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, elt: expr = ..., generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class SetComp(expr):
     if sys.version_info >= (3, 10):
@@ -938,14 +1134,18 @@ class SetComp(expr):
     elt: expr
     generators: list[comprehension]
     if sys.version_info >= (3, 13):
+
         def __init__(self, elt: expr, generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, elt: expr, generators: list[comprehension], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, elt: expr = ..., generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class DictComp(expr):
     if sys.version_info >= (3, 10):
@@ -954,16 +1154,27 @@ class DictComp(expr):
     value: expr
     generators: list[comprehension]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self, key: expr, value: expr, generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]
         ) -> None: ...
     else:
-        def __init__(self, key: expr, value: expr, generators: list[comprehension], **kwargs: Unpack[_Attributes]) -> None: ...
+
+        def __init__(
+            self, key: expr, value: expr, generators: list[comprehension], **kwargs: Unpack[_Attributes]
+        ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
-            self, *, key: expr = ..., value: expr = ..., generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]
+            self,
+            *,
+            key: expr = ...,
+            value: expr = ...,
+            generators: list[comprehension] = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class GeneratorExp(expr):
     if sys.version_info >= (3, 10):
@@ -971,41 +1182,54 @@ class GeneratorExp(expr):
     elt: expr
     generators: list[comprehension]
     if sys.version_info >= (3, 13):
+
         def __init__(self, elt: expr, generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, elt: expr, generators: list[comprehension], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, elt: expr = ..., generators: list[comprehension] = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class Await(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("value",)
     value: expr
+
     def __init__(self, value: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Yield(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("value",)
     value: expr | None
+
     def __init__(self, value: expr | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: expr | None = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class YieldFrom(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("value",)
     value: expr
+
     def __init__(self, value: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Compare(expr):
     if sys.version_info >= (3, 10):
@@ -1014,16 +1238,27 @@ class Compare(expr):
     ops: list[cmpop]
     comparators: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self, left: expr, ops: list[cmpop] = ..., comparators: list[expr] = ..., **kwargs: Unpack[_Attributes]
         ) -> None: ...
     else:
-        def __init__(self, left: expr, ops: list[cmpop], comparators: list[expr], **kwargs: Unpack[_Attributes]) -> None: ...
+
+        def __init__(
+            self, left: expr, ops: list[cmpop], comparators: list[expr], **kwargs: Unpack[_Attributes]
+        ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
-            self, *, left: expr = ..., ops: list[cmpop] = ..., comparators: list[expr] = ..., **kwargs: Unpack[_Attributes]
+            self,
+            *,
+            left: expr = ...,
+            ops: list[cmpop] = ...,
+            comparators: list[expr] = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class Call(expr):
     if sys.version_info >= (3, 10):
@@ -1032,16 +1267,27 @@ class Call(expr):
     args: list[expr]
     keywords: list[keyword]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self, func: expr, args: list[expr] = ..., keywords: list[keyword] = ..., **kwargs: Unpack[_Attributes]
         ) -> None: ...
     else:
-        def __init__(self, func: expr, args: list[expr], keywords: list[keyword], **kwargs: Unpack[_Attributes]) -> None: ...
+
+        def __init__(
+            self, func: expr, args: list[expr], keywords: list[keyword], **kwargs: Unpack[_Attributes]
+        ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
-            self, *, func: expr = ..., args: list[expr] = ..., keywords: list[keyword] = ..., **kwargs: Unpack[_Attributes]
+            self,
+            *,
+            func: expr = ...,
+            args: list[expr] = ...,
+            keywords: list[keyword] = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class FormattedValue(expr):
     if sys.version_info >= (3, 10):
@@ -1049,24 +1295,38 @@ class FormattedValue(expr):
     value: expr
     conversion: int
     format_spec: expr | None
-    def __init__(self, value: expr, conversion: int, format_spec: expr | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
+
+    def __init__(
+        self, value: expr, conversion: int, format_spec: expr | None = None, **kwargs: Unpack[_Attributes]
+    ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
-            self, *, value: expr = ..., conversion: int = ..., format_spec: expr | None = ..., **kwargs: Unpack[_Attributes]
+            self,
+            *,
+            value: expr = ...,
+            conversion: int = ...,
+            format_spec: expr | None = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class JoinedStr(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("values",)
     values: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(self, values: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, values: list[expr], **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, values: list[expr] = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Constant(expr):
     if sys.version_info >= (3, 10):
@@ -1081,7 +1341,9 @@ class Constant(expr):
     def __init__(self, value: Any, kind: str | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: Any = ..., kind: str | None = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Attribute(expr):
     if sys.version_info >= (3, 10):
@@ -1089,12 +1351,17 @@ class Attribute(expr):
     value: expr
     attr: _Identifier
     ctx: expr_context  # Not present in Python < 3.13 if not passed to `__init__`
-    def __init__(self, value: expr, attr: _Identifier, ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
+
+    def __init__(
+        self, value: expr, attr: _Identifier, ctx: expr_context = ..., **kwargs: Unpack[_Attributes]
+    ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, value: expr = ..., attr: _Identifier = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class Subscript(expr):
     if sys.version_info >= (3, 10):
@@ -1102,32 +1369,43 @@ class Subscript(expr):
     value: expr
     slice: _Slice
     ctx: expr_context  # Not present in Python < 3.13 if not passed to `__init__`
+
     def __init__(self, value: expr, slice: _Slice, ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self, *, value: expr = ..., slice: _Slice = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]
         ) -> Self: ...
+
 
 class Starred(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("value", "ctx")
     value: expr
     ctx: expr_context  # Not present in Python < 3.13 if not passed to `__init__`
+
     def __init__(self, value: expr, ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, value: expr = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
 
 class Name(expr):
     if sys.version_info >= (3, 10):
         __match_args__ = ("id", "ctx")
     id: _Identifier
     ctx: expr_context  # Not present in Python < 3.13 if not passed to `__init__`
+
     def __init__(self, id: _Identifier, ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, id: _Identifier = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, id: _Identifier = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 class List(expr):
     if sys.version_info >= (3, 10):
@@ -1135,12 +1413,18 @@ class List(expr):
     elts: list[expr]
     ctx: expr_context  # Not present in Python < 3.13 if not passed to `__init__`
     if sys.version_info >= (3, 13):
+
         def __init__(self, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, elts: list[expr], ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 class Tuple(expr):
     if sys.version_info >= (3, 10):
@@ -1150,15 +1434,22 @@ class Tuple(expr):
     if sys.version_info >= (3, 9):
         dims: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(self, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
     else:
+
         def __init__(self, elts: list[expr], ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, elts: list[expr] = ..., ctx: expr_context = ..., **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 @deprecated("Deprecated since Python 3.9.")
 class slice(AST): ...  # deprecated and moved to ast.py for >= (3, 9)
+
 
 if sys.version_info >= (3, 9):
     _Slice: typing_extensions.TypeAlias = expr
@@ -1169,17 +1460,24 @@ else:
 
     class _SliceAttributes(TypedDict): ...
 
+
 class Slice(_Slice):
     if sys.version_info >= (3, 10):
         __match_args__ = ("lower", "upper", "step")
     lower: expr | None
     upper: expr | None
     step: expr | None
+
     def __init__(
-        self, lower: expr | None = None, upper: expr | None = None, step: expr | None = None, **kwargs: Unpack[_SliceAttributes]
+        self,
+        lower: expr | None = None,
+        upper: expr | None = None,
+        step: expr | None = None,
+        **kwargs: Unpack[_SliceAttributes],
     ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -1189,75 +1487,159 @@ class Slice(_Slice):
             **kwargs: Unpack[_SliceAttributes],
         ) -> Self: ...
 
+
 @deprecated("Deprecated since Python 3.9. Use ast.Tuple instead.")
 class ExtSlice(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
     if sys.version_info >= (3, 9):
+
         def __new__(cls, dims: Iterable[slice] = (), **kwargs: Unpack[_SliceAttributes]) -> Tuple: ...  # type: ignore[misc]
     else:
         dims: list[slice]
+
         def __init__(self, dims: list[slice], **kwargs: Unpack[_SliceAttributes]) -> None: ...
+
 
 @deprecated("Deprecated since Python 3.9. Use the index value directly instead.")
 class Index(slice):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
     if sys.version_info >= (3, 9):
+
         def __new__(cls, value: expr, **kwargs: Unpack[_SliceAttributes]) -> expr: ...  # type: ignore[misc]
     else:
         value: expr
+
         def __init__(self, value: expr, **kwargs: Unpack[_SliceAttributes]) -> None: ...
 
+
 class expr_context(AST): ...
+
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
 class AugLoad(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
 
+
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
 class AugStore(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
 
+
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
 class Param(expr_context): ...  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
+
 
 @deprecated("Deprecated since Python 3.9. Unused in Python 3.")
 class Suite(mod):  # deprecated and moved to ast.py if sys.version_info >= (3, 9)
     if sys.version_info < (3, 9):
         body: list[stmt]
+
         def __init__(self, body: list[stmt]) -> None: ...
 
+
 class Load(expr_context): ...
+
+
 class Store(expr_context): ...
+
+
 class Del(expr_context): ...
+
+
 class boolop(AST): ...
+
+
 class And(boolop): ...
+
+
 class Or(boolop): ...
+
+
 class operator(AST): ...
+
+
 class Add(operator): ...
+
+
 class Sub(operator): ...
+
+
 class Mult(operator): ...
+
+
 class MatMult(operator): ...
+
+
 class Div(operator): ...
+
+
 class Mod(operator): ...
+
+
 class Pow(operator): ...
+
+
 class LShift(operator): ...
+
+
 class RShift(operator): ...
+
+
 class BitOr(operator): ...
+
+
 class BitXor(operator): ...
+
+
 class BitAnd(operator): ...
+
+
 class FloorDiv(operator): ...
+
+
 class unaryop(AST): ...
+
+
 class Invert(unaryop): ...
+
+
 class Not(unaryop): ...
+
+
 class UAdd(unaryop): ...
+
+
 class USub(unaryop): ...
+
+
 class cmpop(AST): ...
+
+
 class Eq(cmpop): ...
+
+
 class NotEq(cmpop): ...
+
+
 class Lt(cmpop): ...
+
+
 class LtE(cmpop): ...
+
+
 class Gt(cmpop): ...
+
+
 class GtE(cmpop): ...
+
+
 class Is(cmpop): ...
+
+
 class IsNot(cmpop): ...
+
+
 class In(cmpop): ...
+
+
 class NotIn(cmpop): ...
+
 
 class comprehension(AST):
     if sys.version_info >= (3, 10):
@@ -1267,27 +1649,41 @@ class comprehension(AST):
     ifs: list[expr]
     is_async: int
     if sys.version_info >= (3, 13):
+
         @overload
         def __init__(self, target: expr, iter: expr, ifs: list[expr], is_async: int) -> None: ...
         @overload
         def __init__(self, target: expr, iter: expr, ifs: list[expr] = ..., *, is_async: int) -> None: ...
     else:
+
         def __init__(self, target: expr, iter: expr, ifs: list[expr], is_async: int) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, target: expr = ..., iter: expr = ..., ifs: list[expr] = ..., is_async: int = ...) -> Self: ...
+
+        def __replace__(
+            self, *, target: expr = ..., iter: expr = ..., ifs: list[expr] = ..., is_async: int = ...
+        ) -> Self: ...
+
 
 class excepthandler(AST):
     lineno: int
     col_offset: int
     end_lineno: int | None
     end_col_offset: int | None
+
     def __init__(self, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
-            self, *, lineno: int = ..., col_offset: int = ..., end_lineno: int | None = ..., end_col_offset: int | None = ...
+            self,
+            *,
+            lineno: int = ...,
+            col_offset: int = ...,
+            end_lineno: int | None = ...,
+            end_col_offset: int | None = ...,
         ) -> Self: ...
+
 
 class ExceptHandler(excepthandler):
     if sys.version_info >= (3, 10):
@@ -1296,20 +1692,32 @@ class ExceptHandler(excepthandler):
     name: _Identifier | None
     body: list[stmt]
     if sys.version_info >= (3, 13):
+
         def __init__(
-            self, type: expr | None = None, name: _Identifier | None = None, body: list[stmt] = ..., **kwargs: Unpack[_Attributes]
+            self,
+            type: expr | None = None,
+            name: _Identifier | None = None,
+            body: list[stmt] = ...,
+            **kwargs: Unpack[_Attributes],
         ) -> None: ...
     else:
+
         @overload
         def __init__(
             self, type: expr | None, name: _Identifier | None, body: list[stmt], **kwargs: Unpack[_Attributes]
         ) -> None: ...
         @overload
         def __init__(
-            self, type: expr | None = None, name: _Identifier | None = None, *, body: list[stmt], **kwargs: Unpack[_Attributes]
+            self,
+            type: expr | None = None,
+            name: _Identifier | None = None,
+            *,
+            body: list[stmt],
+            **kwargs: Unpack[_Attributes],
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -1318,6 +1726,7 @@ class ExceptHandler(excepthandler):
             body: list[stmt] = ...,
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class arguments(AST):
     if sys.version_info >= (3, 10):
@@ -1330,6 +1739,7 @@ class arguments(AST):
     kwarg: arg | None
     defaults: list[expr]
     if sys.version_info >= (3, 13):
+
         def __init__(
             self,
             posonlyargs: list[arg] = ...,
@@ -1341,6 +1751,7 @@ class arguments(AST):
             defaults: list[expr] = ...,
         ) -> None: ...
     else:
+
         @overload
         def __init__(
             self,
@@ -1378,6 +1789,7 @@ class arguments(AST):
         ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -1390,6 +1802,7 @@ class arguments(AST):
             defaults: list[expr] = ...,
         ) -> Self: ...
 
+
 class arg(AST):
     lineno: int
     col_offset: int
@@ -1400,11 +1813,17 @@ class arg(AST):
     arg: _Identifier
     annotation: expr | None
     type_comment: str | None
+
     def __init__(
-        self, arg: _Identifier, annotation: expr | None = None, type_comment: str | None = None, **kwargs: Unpack[_Attributes]
+        self,
+        arg: _Identifier,
+        annotation: expr | None = None,
+        type_comment: str | None = None,
+        **kwargs: Unpack[_Attributes],
     ) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(
             self,
             *,
@@ -1413,6 +1832,7 @@ class arg(AST):
             type_comment: str | None = ...,
             **kwargs: Unpack[_Attributes],
         ) -> Self: ...
+
 
 class keyword(AST):
     lineno: int
@@ -1423,13 +1843,18 @@ class keyword(AST):
         __match_args__ = ("arg", "value")
     arg: _Identifier | None
     value: expr
+
     @overload
     def __init__(self, arg: _Identifier | None, value: expr, **kwargs: Unpack[_Attributes]) -> None: ...
     @overload
     def __init__(self, arg: _Identifier | None = None, *, value: expr, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, arg: _Identifier | None = ..., value: expr = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, arg: _Identifier | None = ..., value: expr = ..., **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 class alias(AST):
     lineno: int
@@ -1440,46 +1865,62 @@ class alias(AST):
         __match_args__ = ("name", "asname")
     name: str
     asname: _Identifier | None
+
     def __init__(self, name: str, asname: _Identifier | None = None, **kwargs: Unpack[_Attributes]) -> None: ...
 
     if sys.version_info >= (3, 14):
-        def __replace__(self, *, name: str = ..., asname: _Identifier | None = ..., **kwargs: Unpack[_Attributes]) -> Self: ...
+
+        def __replace__(
+            self, *, name: str = ..., asname: _Identifier | None = ..., **kwargs: Unpack[_Attributes]
+        ) -> Self: ...
+
 
 class withitem(AST):
     if sys.version_info >= (3, 10):
         __match_args__ = ("context_expr", "optional_vars")
     context_expr: expr
     optional_vars: expr | None
+
     def __init__(self, context_expr: expr, optional_vars: expr | None = None) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, context_expr: expr = ..., optional_vars: expr | None = ...) -> Self: ...
 
+
 if sys.version_info >= (3, 10):
+
     class match_case(AST):
         __match_args__ = ("pattern", "guard", "body")
         pattern: _Pattern
         guard: expr | None
         body: list[stmt]
         if sys.version_info >= (3, 13):
+
             def __init__(self, pattern: _Pattern, guard: expr | None = None, body: list[stmt] = ...) -> None: ...
         else:
+
             @overload
             def __init__(self, pattern: _Pattern, guard: expr | None, body: list[stmt]) -> None: ...
             @overload
             def __init__(self, pattern: _Pattern, guard: expr | None = None, *, body: list[stmt]) -> None: ...
 
         if sys.version_info >= (3, 14):
-            def __replace__(self, *, pattern: _Pattern = ..., guard: expr | None = ..., body: list[stmt] = ...) -> Self: ...
+
+            def __replace__(
+                self, *, pattern: _Pattern = ..., guard: expr | None = ..., body: list[stmt] = ...
+            ) -> Self: ...
 
     class pattern(AST):
         lineno: int
         col_offset: int
         end_lineno: int
         end_col_offset: int
+
         def __init__(self, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self, *, lineno: int = ..., col_offset: int = ..., end_lineno: int = ..., end_col_offset: int = ...
             ) -> Self: ...
@@ -1490,28 +1931,37 @@ if sys.version_info >= (3, 10):
     class MatchValue(pattern):
         __match_args__ = ("value",)
         value: expr
+
         def __init__(self, value: expr, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(self, *, value: expr = ..., **kwargs: Unpack[_Attributes[int]]) -> Self: ...
 
     class MatchSingleton(pattern):
         __match_args__ = ("value",)
         value: Literal[True, False] | None
+
         def __init__(self, value: Literal[True, False] | None, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
-            def __replace__(self, *, value: Literal[True, False] | None = ..., **kwargs: Unpack[_Attributes[int]]) -> Self: ...
+
+            def __replace__(
+                self, *, value: Literal[True, False] | None = ..., **kwargs: Unpack[_Attributes[int]]
+            ) -> Self: ...
 
     class MatchSequence(pattern):
         __match_args__ = ("patterns",)
         patterns: list[pattern]
         if sys.version_info >= (3, 13):
+
             def __init__(self, patterns: list[pattern] = ..., **kwargs: Unpack[_Attributes[int]]) -> None: ...
         else:
+
             def __init__(self, patterns: list[pattern], **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(self, *, patterns: list[pattern] = ..., **kwargs: Unpack[_Attributes[int]]) -> Self: ...
 
     class MatchMapping(pattern):
@@ -1520,6 +1970,7 @@ if sys.version_info >= (3, 10):
         patterns: list[pattern]
         rest: _Identifier | None
         if sys.version_info >= (3, 13):
+
             def __init__(
                 self,
                 keys: list[expr] = ...,
@@ -1528,6 +1979,7 @@ if sys.version_info >= (3, 10):
                 **kwargs: Unpack[_Attributes[int]],
             ) -> None: ...
         else:
+
             def __init__(
                 self,
                 keys: list[expr],
@@ -1537,6 +1989,7 @@ if sys.version_info >= (3, 10):
             ) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self,
                 *,
@@ -1553,6 +2006,7 @@ if sys.version_info >= (3, 10):
         kwd_attrs: list[_Identifier]
         kwd_patterns: list[pattern]
         if sys.version_info >= (3, 13):
+
             def __init__(
                 self,
                 cls: expr,
@@ -1562,6 +2016,7 @@ if sys.version_info >= (3, 10):
                 **kwargs: Unpack[_Attributes[int]],
             ) -> None: ...
         else:
+
             def __init__(
                 self,
                 cls: expr,
@@ -1572,6 +2027,7 @@ if sys.version_info >= (3, 10):
             ) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self,
                 *,
@@ -1585,56 +2041,75 @@ if sys.version_info >= (3, 10):
     class MatchStar(pattern):
         __match_args__ = ("name",)
         name: _Identifier | None
+
         def __init__(self, name: _Identifier | None, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(self, *, name: _Identifier | None = ..., **kwargs: Unpack[_Attributes[int]]) -> Self: ...
 
     class MatchAs(pattern):
         __match_args__ = ("pattern", "name")
         pattern: _Pattern | None
         name: _Identifier | None
+
         def __init__(
             self, pattern: _Pattern | None = None, name: _Identifier | None = None, **kwargs: Unpack[_Attributes[int]]
         ) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
-                self, *, pattern: _Pattern | None = ..., name: _Identifier | None = ..., **kwargs: Unpack[_Attributes[int]]
+                self,
+                *,
+                pattern: _Pattern | None = ...,
+                name: _Identifier | None = ...,
+                **kwargs: Unpack[_Attributes[int]],
             ) -> Self: ...
 
     class MatchOr(pattern):
         __match_args__ = ("patterns",)
         patterns: list[pattern]
         if sys.version_info >= (3, 13):
+
             def __init__(self, patterns: list[pattern] = ..., **kwargs: Unpack[_Attributes[int]]) -> None: ...
         else:
+
             def __init__(self, patterns: list[pattern], **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(self, *, patterns: list[pattern] = ..., **kwargs: Unpack[_Attributes[int]]) -> Self: ...
 
+
 class type_ignore(AST): ...
+
 
 class TypeIgnore(type_ignore):
     if sys.version_info >= (3, 10):
         __match_args__ = ("lineno", "tag")
     lineno: int
     tag: str
+
     def __init__(self, lineno: int, tag: str) -> None: ...
 
     if sys.version_info >= (3, 14):
+
         def __replace__(self, *, lineno: int = ..., tag: str = ...) -> Self: ...
 
+
 if sys.version_info >= (3, 12):
+
     class type_param(AST):
         lineno: int
         col_offset: int
         end_lineno: int
         end_col_offset: int
+
         def __init__(self, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(self, **kwargs: Unpack[_Attributes[int]]) -> Self: ...
 
     class TypeVar(type_param):
@@ -1646,6 +2121,7 @@ if sys.version_info >= (3, 12):
         bound: expr | None
         if sys.version_info >= (3, 13):
             default_value: expr | None
+
             def __init__(
                 self,
                 name: _Identifier,
@@ -1654,9 +2130,13 @@ if sys.version_info >= (3, 12):
                 **kwargs: Unpack[_Attributes[int]],
             ) -> None: ...
         else:
-            def __init__(self, name: _Identifier, bound: expr | None = None, **kwargs: Unpack[_Attributes[int]]) -> None: ...
+
+            def __init__(
+                self, name: _Identifier, bound: expr | None = None, **kwargs: Unpack[_Attributes[int]]
+            ) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self,
                 *,
@@ -1674,13 +2154,16 @@ if sys.version_info >= (3, 12):
         name: _Identifier
         if sys.version_info >= (3, 13):
             default_value: expr | None
+
             def __init__(
                 self, name: _Identifier, default_value: expr | None = None, **kwargs: Unpack[_Attributes[int]]
             ) -> None: ...
         else:
+
             def __init__(self, name: _Identifier, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self, *, name: _Identifier = ..., default_value: expr | None = ..., **kwargs: Unpack[_Attributes[int]]
             ) -> Self: ...
@@ -1693,22 +2176,29 @@ if sys.version_info >= (3, 12):
         name: _Identifier
         if sys.version_info >= (3, 13):
             default_value: expr | None
+
             def __init__(
                 self, name: _Identifier, default_value: expr | None = None, **kwargs: Unpack[_Attributes[int]]
             ) -> None: ...
         else:
+
             def __init__(self, name: _Identifier, **kwargs: Unpack[_Attributes[int]]) -> None: ...
 
         if sys.version_info >= (3, 14):
+
             def __replace__(
                 self, *, name: _Identifier = ..., default_value: expr | None = ..., **kwargs: Unpack[_Attributes[int]]
             ) -> Self: ...
 
+
 class _ABC(type):
     if sys.version_info >= (3, 9):
+
         def __init__(cls, *args: Unused) -> None: ...
 
+
 if sys.version_info < (3, 14):
+
     @deprecated("Replaced by ast.Constant; removed in Python 3.14")
     class Num(Constant, metaclass=_ABC):
         value: int | float | complex
@@ -1736,6 +2226,7 @@ if sys.version_info < (3, 14):
 _T = _TypeVar("_T", bound=AST)
 
 if sys.version_info >= (3, 13):
+
     @overload
     def parse(
         source: str | ReadableBuffer,
@@ -1815,6 +2306,7 @@ if sys.version_info >= (3, 13):
     ) -> AST: ...
 
 else:
+
     @overload
     def parse(
         source: str | ReadableBuffer,
@@ -1885,9 +2377,12 @@ else:
         feature_version: None | int | tuple[int, int] = None,
     ) -> AST: ...
 
+
 def literal_eval(node_or_string: str | AST) -> Any: ...
 
+
 if sys.version_info >= (3, 13):
+
     def dump(
         node: AST,
         annotate_fields: bool = True,
@@ -1898,12 +2393,15 @@ if sys.version_info >= (3, 13):
     ) -> str: ...
 
 elif sys.version_info >= (3, 9):
+
     def dump(
         node: AST, annotate_fields: bool = True, include_attributes: bool = False, *, indent: int | str | None = None
     ) -> str: ...
 
 else:
+
     def dump(node: AST, annotate_fields: bool = True, include_attributes: bool = False) -> str: ...
+
 
 def copy_location(new_node: _T, old_node: AST) -> _T: ...
 def fix_missing_locations(node: _T) -> _T: ...
@@ -1914,8 +2412,11 @@ def get_docstring(node: AsyncFunctionDef | FunctionDef | ClassDef | Module, clea
 def get_source_segment(source: str, node: AST, *, padded: bool = False) -> str | None: ...
 def walk(node: AST) -> Iterator[AST]: ...
 
+
 if sys.version_info >= (3, 14):
+
     def compare(left: AST, right: AST, /, *, compare_attributes: bool = False) -> bool: ...
+
 
 class NodeVisitor:
     def visit(self, node: AST) -> Any: ...
@@ -2015,7 +2516,9 @@ class NodeVisitor:
     def visit_keyword(self, node: keyword) -> Any: ...
     def visit_alias(self, node: alias) -> Any: ...
     def visit_withitem(self, node: withitem) -> Any: ...
+
     if sys.version_info >= (3, 10):
+
         def visit_Match(self, node: Match) -> Any: ...
         def visit_match_case(self, node: match_case) -> Any: ...
         def visit_MatchValue(self, node: MatchValue) -> Any: ...
@@ -2028,9 +2531,11 @@ class NodeVisitor:
         def visit_MatchOr(self, node: MatchOr) -> Any: ...
 
     if sys.version_info >= (3, 11):
+
         def visit_TryStar(self, node: TryStar) -> Any: ...
 
     if sys.version_info >= (3, 12):
+
         def visit_TypeVar(self, node: TypeVar) -> Any: ...
         def visit_ParamSpec(self, node: ParamSpec) -> Any: ...
         def visit_TypeVarTuple(self, node: TypeVarTuple) -> Any: ...
@@ -2045,6 +2550,7 @@ class NodeVisitor:
     def visit_Param(self, node: Param) -> Any: ...
 
     if sys.version_info < (3, 14):
+
         @deprecated("Replaced by visit_Constant; removed in Python 3.14")
         def visit_Num(self, node: Num) -> Any: ...  # type: ignore[deprecated]
         @deprecated("Replaced by visit_Constant; removed in Python 3.14")
@@ -2056,14 +2562,20 @@ class NodeVisitor:
         @deprecated("Replaced by visit_Constant; removed in Python 3.14")
         def visit_Ellipsis(self, node: Ellipsis) -> Any: ...  # type: ignore[deprecated]
 
+
 class NodeTransformer(NodeVisitor):
     def generic_visit(self, node: AST) -> AST: ...
+
     # TODO: Override the visit_* methods with better return types.
     #       The usual return type is AST | None, but Iterable[AST]
     #       is also allowed in some cases -- this needs to be mapped.
 
-if sys.version_info >= (3, 9):
-    def unparse(ast_obj: AST) -> str: ...
 
 if sys.version_info >= (3, 9):
+
+    def unparse(ast_obj: AST) -> str: ...
+
+
+if sys.version_info >= (3, 9):
+
     def main() -> None: ...
