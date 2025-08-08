@@ -3,12 +3,13 @@ from __future__ import annotations
 import ast
 import datetime as dt
 import enum
+from functools import cache
 import inspect
 import textwrap
 import zoneinfo
 from dataclasses import MISSING, dataclass, fields, is_dataclass
 from types import NoneType, UnionType
-from typing import Annotated, Any, Literal, TypeVar, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Callable, Literal, TypeVar, Union, cast, get_args, get_origin
 
 from typing_extensions import TypeIs
 
@@ -256,20 +257,38 @@ class NameNodeMap:
         return None
 
 
-def _is_instance(v: ASTValue, t: type[T]) -> TypeIs[T]:
-    """`isinstance`, but handles `t = list[T], t = A | B`"""
+@cache
+def _make_is_instance(t: type[T]) -> Callable[[ASTValue], bool]:
     if get_origin(t) is list:
         [t_inner] = get_args(t)
-        return isinstance(v, list) and all(_is_instance(u, t_inner) for u in v)
+        is_instance_inner = _make_is_instance(t_inner)
+        return lambda v: isinstance(v, list) and all(is_instance_inner(u) for u in v)
     if get_origin(t) is Union:
-        return any(_is_instance(v, t_inner) for t_inner in get_args(t))
+        is_instance_inners = [_make_is_instance(t_inner) for t_inner in get_args(t)]
+        return lambda v: any(is_instance_inner(v) for is_instance_inner in is_instance_inners)
 
-    return isinstance(v, t)
+    return lambda v: isinstance(v, t)
+
+
+def _is_instance(v: ASTValue, t: type[T]) -> TypeIs[T]:
+    """`isinstance`, but handles `t = list[T], t = A | B`"""
+    return _make_is_instance(t)(v)  # type: ignore
 
 
 def _downcast(t: type[T], v: ASTValue) -> T:
     """Keep removing layers of AST until hopefully, `_is_instance(v, t)`."""
     v_original = v
+
+    # Handle v common case
+    if (
+        t is ast.expr
+        and isinstance(v, ast.Module)
+        and len(v.body) == 1
+        and isinstance(v.body[0], ast.Expr)
+        and isinstance(v.body[0].value, ast.Name)
+    ):
+        return v.body[0].value  # type: ignore[return-value]
+
     while not _is_instance(v, t):
         if isinstance(v, list) and get_origin(t) is list:
             [r] = get_args(t)
