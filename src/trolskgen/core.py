@@ -4,7 +4,7 @@ import ast
 import subprocess
 from dataclasses import dataclass, field
 from functools import cache, partial, wraps
-from typing import Any, Callable, Protocol, runtime_checkable
+from typing import Any, Callable
 
 
 class TrolskgenError(RuntimeError): ...
@@ -12,11 +12,6 @@ class TrolskgenError(RuntimeError): ...
 
 F = Callable[[Any], ast.AST]
 Converter = Callable[[Any, F], ast.AST | None]
-
-
-@runtime_checkable
-class ConvertInterface(Protocol):
-    def __trolskgen__(self, f: F) -> ast.AST: ...
 
 
 def upcast_expr(converter: Converter) -> Converter:
@@ -48,10 +43,10 @@ def default_converters() -> list[Converter]:
     out: list[Converter] = [
         converters.converter_ast,
         converters.converter_template,
+        converters.converter_interface,
         converters.converter_simple,
         converters.converter_types_and_functions,
         converters.converter_typeform,
-        converters.converter_interface,
         converters.converter_common,
     ]
     if (converter_pydantic := safe_converter_pydantic()) is not None:

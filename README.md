@@ -183,12 +183,13 @@ We can add our own classes/overrides using:
 
 | Configuring/Overriding |
 |---|
-| `trolskgen.ConvertInterface` |
+| `__trolskgen__` |
+| `__trolskgen_cls__` |
 | `trolskgen.Converter` |
 | `trolskgen.Config` |
 | `trolskgen.Config().prepend_converter(converter: Converter, *, before: Converter \| None) -> Config` |
 
-If you own the class, you can just add a `__trolskgen__` method that satisfies `trolskgen.ConvertInterface`.
+If you own the class, you can just add a `__trolskgen__` method:
 
 For example:
 
@@ -198,6 +199,20 @@ class MyInterfaceClass:
         return f(t("MyInterfaceClass({values:*})", values=[1, 2, 3]))
 
 trolskgen.to_source(MyInterfaceClass()) == "MyInterfaceClass(1, 2, 3)"
+```
+
+You can also add a `__trolskgen_cls__` `@classmethod`:
+
+```python
+@dataclass
+class MyJustName:
+    a: str
+
+    @classmethod
+    def __trolskgen_cls__(cls, f: trolskgen.F) -> ast.AST:
+        return f(t("Foo"))
+
+trolskgen.to_source(MyJustName("bar")) == "Foo(a='bar')"
 ```
 
 Note that we use `f` to recursively call `trolskgen.to_ast(...)` while preserving the current `Config`.

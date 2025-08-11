@@ -180,10 +180,12 @@ def converter_typeform(o: Any, f: core.F) -> ast.AST | None:
 
 @core.upcast_expr
 def converter_interface(o: Any, f: core.F) -> ast.AST | None:
-    if not isinstance(o, core.ConvertInterface):
-        return None
-
-    return o.__trolskgen__(f)
+    if type(o) is type:
+        if hasattr(o, "__trolskgen_cls__"):
+            return o.__trolskgen_cls__(f)  # type: ignore
+    elif hasattr(o, "__trolskgen__"):
+        return o.__trolskgen__(f)  # type: ignore
+    return None
 
 
 def converter_template(o: Any, f: core.F) -> ast.AST | None:

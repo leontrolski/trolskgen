@@ -298,14 +298,41 @@ def test_build_custom_int() -> None:
 
 class MyInterfaceClass:
     def __trolskgen__(self, f: trolskgen.F) -> ast.AST:
-        return f(t("MyInterfaceClass({values:*})", values=[1, 2, 3]))
+        return f(t("{cls_}({values:*})", cls_=self.__class__, values=[1, 2, 3]))
+
+    @classmethod
+    def __trolskgen_cls__(cls, f: trolskgen.F) -> ast.AST:
+        return f(t(cls.__name__))
 
 
 def test_convert_interface() -> None:
-    interfacey: trolskgen.ConvertInterface = MyInterfaceClass()
+    interfacey = MyInterfaceClass()
     _eq(
         trolskgen.to_source(interfacey),
         "MyInterfaceClass(1, 2, 3)",
+    )
+
+
+def test_convert_interface_cls() -> None:
+    _eq(
+        trolskgen.to_source(MyInterfaceClass),
+        "MyInterfaceClass",
+    )
+
+
+@dataclass
+class MyJustName:
+    a: str
+
+    @classmethod
+    def __trolskgen_cls__(cls, f: trolskgen.F) -> ast.AST:
+        return f(t("Foo"))
+
+
+def test_convert_interface_cls_just_name() -> None:
+    _eq(
+        trolskgen.to_source(MyJustName("bar")),
+        "Foo(a='bar')",
     )
 
 

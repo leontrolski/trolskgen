@@ -1,6 +1,6 @@
 [project]
 name = "trolskgen"
-version = "0.0.16"
+version = "0.0.17"
 description = "Cute Python codegen"
 readme = "README.md"
 requires-python = ">=3.12"
