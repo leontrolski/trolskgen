@@ -149,7 +149,7 @@ _This is redundant as of Python 3.14 - see above._
 | Converting to AST/source|
 |---|
 | `trolskgen.to_ast(o: Any, *, config: Config) -> ast.AST` |
-| `trolskgen.to_source(o: Any, *, config: Config, ruff_format: bool) -> str` |
+| `trolskgen.to_source(o: Any, *, config: Config, ruff_format: bool, ruff_line_length: int) -> str` |
 
 Try to convert `o` into an `ast.AST`/`str` representation.
 

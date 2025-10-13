@@ -94,10 +94,17 @@ def sh(cmd: list[str], stdin: str) -> str:
     return result.stdout
 
 
-def to_source(o: Any, *, config: Config | None = None, ruff_format: bool = False) -> str:
+def to_source(
+    o: Any,
+    *,
+    config: Config | None = None,
+    ruff_format: bool = False,
+    ruff_line_length: int = -1,
+) -> str:
     source = ast.unparse(to_ast(o, config=config))
     if ruff_format:
-        source = sh(["ruff", "format", "-"], source)
+        line_length_args = [] if ruff_line_length == -1 else ["--line-length", str(ruff_line_length)]
+        source = sh(["ruff", "format", "-"] + line_length_args, source)
         source = sh(["ruff", "check", "-e", "--fix", "-"], source)
         source = sh(["ruff", "check", "-e", "--select", "I", "--fix", "-"], source)
     return source
