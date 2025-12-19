@@ -2,11 +2,11 @@ from trolskgen import templates
 
 
 def test_templates() -> None:
-    assert templates.Template.from_templatelike("Hello") == templates.Template(["Hello"])
+    assert templates.Template.from_templatelike("Hello") == templates.Template(("Hello",))
     this = "THIS"
     world = "WORLD"
     expected = templates.Template(
-        [
+        (
             "Hello ",
             templates.Interpolation(
                 value="THIS",
@@ -18,10 +18,12 @@ def test_templates() -> None:
                 expression="world",
                 format_spec="",
             ),
-        ]
+        )
     )
     assert templates.Template.from_str("Hello {this:foo}{world}", this=this, world=world) == expected
     assert templates.Template.from_templatelike(expected) == expected
+
+    hash(expected)  # check we can hash
 
     # if sys.version_info >= (3, 14):
     #     assert templates.Template.from_any(t"Hello {this:foo}{world}") == expected

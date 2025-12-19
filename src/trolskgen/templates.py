@@ -12,39 +12,39 @@ from typing import Any, Self, Union
 class TemplateError(RuntimeError): ...
 
 
-@dataclass
+@dataclass(frozen=True)
 class Interpolation:
     value: Any
     expression: str
     format_spec: str | None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Template:
-    parts: list[str | Interpolation]
+    parts: tuple[str | Interpolation, ...]
 
     def __or__(self, value: Any) -> type[Any]:
         return Union[self, value]  # type: ignore[return-value]
 
     @classmethod
     def from_str(cls, s: str, **kwargs: Any) -> Self:
-        out = cls([])
+        parts = list[str | Interpolation]()
         for literal_text, field_name, format_spec, _conversion in Formatter().parse(s):
             if literal_text:
-                out.parts.append(literal_text)
+                parts.append(literal_text)
             if field_name is not None:
                 try:
                     value = kwargs[field_name]
                 except KeyError:
                     raise TemplateError(f"Kwargs missing key: {field_name}\n\n{s}")
-                out.parts.append(
+                parts.append(
                     Interpolation(
                         value=value,
                         expression=field_name,
                         format_spec=format_spec,
                     )
                 )
-        return out
+        return cls(tuple(parts))
 
     if sys.version_info >= (3, 14):
 
