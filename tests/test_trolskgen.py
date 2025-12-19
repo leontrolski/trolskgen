@@ -612,6 +612,14 @@ def test_more_reprs() -> None:
         trolskgen.to_source(()),
         "()",
     )
+    _eq(
+        trolskgen.to_source(...),
+        "...",
+    )
+    _eq(
+        trolskgen.to_source(trolskgen.t("...")),
+        "...",
+    )
 
 
 def test_nested_attr() -> None:

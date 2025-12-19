@@ -8,7 +8,7 @@ import inspect
 import textwrap
 import zoneinfo
 from dataclasses import MISSING, dataclass, fields, is_dataclass
-from types import NoneType, UnionType
+from types import EllipsisType, NoneType, UnionType
 from typing import Annotated, Any, Callable, Literal, TypeVar, Union, cast, get_args, get_origin
 
 from typing_extensions import TypeIs
@@ -40,6 +40,8 @@ def converter_simple(o: Any, f: core.F) -> ast.AST | None:
         )
     if isinstance(o, set):
         return ast.Set(elts=[_downcast(ast.expr, f(e)) for e in o])
+    if isinstance(o, EllipsisType):
+        return ast.Constant(value=Ellipsis)
     return None
 
 
