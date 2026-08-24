@@ -298,6 +298,22 @@ def test_splat_dict() -> None:
             b = 2
         """,
     )
+    code = t("f({args,kwargs:*})", args=[], kwargs={"a": 1, "b": 2})
+    _eq(
+        trolskgen.to_source(code),
+        "f(a=1, b=2)",
+    )
+    code = t("f({args,kwargs:*})", args=[1, 2], kwargs={})
+    _eq(
+        trolskgen.to_source(code),
+        "f(1, 2)",
+    )
+    code = t("f({args,kwargs:*})", args=[3, 4], kwargs={"a": 1, "b": 2})
+    _eq(
+        trolskgen.to_source(code),
+        "f(3, 4, a=1, b=2)",
+    )
+
 
 def test_imports() -> None:
     code = t("{import_}\nx=1", import_=t("import foo"))
@@ -318,7 +334,6 @@ def test_imports() -> None:
     #     x = 1
     #     """,
     # )
-
 
 
 def test_build_custom_int() -> None:

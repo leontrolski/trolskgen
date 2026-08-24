@@ -19,6 +19,9 @@ class Interpolation:
     format_spec: str | None
 
 
+class Composite(tuple[object]): ...
+
+
 @dataclass(frozen=True)
 class Template:
     parts: tuple[str | Interpolation, ...]
@@ -33,10 +36,16 @@ class Template:
             if literal_text:
                 parts.append(literal_text)
             if field_name is not None:
-                try:
-                    value = kwargs[field_name]
-                except KeyError:
-                    raise TemplateError(f"Kwargs missing key: {field_name}\n\n{s}")
+                if "," in field_name:
+                    for sub_field_name in field_name.split(","):
+                        if sub_field_name not in kwargs:
+                            raise TemplateError(f"Kwargs missing key: {field_name}\n\n{s}")
+                    value = Composite(kwargs[sub_field_name] for sub_field_name in field_name.split(","))
+                else:
+                    try:
+                        value = kwargs[field_name]
+                    except KeyError:
+                        raise TemplateError(f"Kwargs missing key: {field_name}\n\n{s}")
                 parts.append(
                     Interpolation(
                         value=value,

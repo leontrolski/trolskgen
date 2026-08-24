@@ -190,6 +190,16 @@ def converter_interface(o: Any, f: core.F) -> ast.AST | None:
     return None
 
 
+def _splat(v: object) -> list[object]:
+    if isinstance(v, templates.Composite):
+        return [n for u in v for n in _splat(u)]
+    if isinstance(v, list):
+        return v
+    if isinstance(v, dict):
+        return [templates.Template.from_str("{k}={n}", k=k, n=n) for k, n in v.items()]
+    raise core.TrolskgenError(f"Can only splat lists/dicts of values, not: {v!r}")
+
+
 def converter_template(o: Any, f: core.F) -> ast.AST | None:
     if not isinstance(o, templates.TemplateLike):
         return None
@@ -205,12 +215,7 @@ def converter_template(o: Any, f: core.F) -> ast.AST | None:
         else:
             assert isinstance(part, templates.Interpolation)
             if part.format_spec == "*":
-                if isinstance(part.value, list):
-                    v = [f(n) for n in part.value]
-                elif isinstance(part.value, dict):
-                    v = [f(templates.Template.from_str("{k}={n}", k=k, n=n)) for k, n in part.value.items()]
-                else:
-                    raise core.TrolskgenError(f"Can only splat lists/dicts of values, not: {part.value!r}")
+                v = [f(n) for n in _splat(part.value)]
             else:
                 v = [f(part.value)]
 
