@@ -283,6 +283,44 @@ def test_splat() -> None:
     )
 
 
+def test_splat_dict() -> None:
+    code = t("f({kwargs:*})", kwargs={"a": 1, "b": 2})
+    _eq(
+        trolskgen.to_source(code),
+        "f(a=1, b=2)",
+    )
+    code = t("def f():\n    {statements:*}", statements={"a": 1, "b": 2})
+    _eq(
+        trolskgen.to_source(code),
+        """
+        def f():
+            a = 1
+            b = 2
+        """,
+    )
+
+def test_imports() -> None:
+    code = t("{import_}\nx=1", import_=t("import foo"))
+    _eq(
+        trolskgen.to_source(code),
+        """
+        import foo
+        x = 1
+        """,
+    )
+    # TODO: make this work
+    # code = t("{imports:*}\nx=1", imports=[t("import foo"), t("from foo import bar")])
+    # _eq(
+    #     trolskgen.to_source(code),
+    #     """
+    #     import foo
+    #     from foo import bar
+    #     x = 1
+    #     """,
+    # )
+
+
+
 def test_build_custom_int() -> None:
     def custom_int_converter(o: Any, f: trolskgen.F) -> ast.AST | None:
         if not isinstance(o, int):

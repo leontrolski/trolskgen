@@ -205,9 +205,12 @@ def converter_template(o: Any, f: core.F) -> ast.AST | None:
         else:
             assert isinstance(part, templates.Interpolation)
             if part.format_spec == "*":
-                if not isinstance(part.value, list):
-                    raise core.TrolskgenError(f"Can only splat lists of values, not: {part.value!r}")
-                v = [f(n) for n in part.value]
+                if isinstance(part.value, list):
+                    v = [f(n) for n in part.value]
+                elif isinstance(part.value, dict):
+                    v = [f(templates.Template.from_str("{k}={n}", k=k, n=n)) for k, n in part.value.items()]
+                else:
+                    raise core.TrolskgenError(f"Can only splat lists/dicts of values, not: {part.value!r}")
             else:
                 v = [f(part.value)]
 
@@ -310,7 +313,7 @@ def _downcast(t: type[T], v: ASTValue) -> T:
         elif isinstance(v, str) and _is_instance(ast.Name("_"), t):
             v = ast.Name(id=v)  # actually an upcast, hence the extra check to avoid endless loop
         else:
-            raise core.TrolskgenError(f"Cannot convert {v_original!r} to {t!r}, got as far as {v!r}")
+            raise core.TrolskgenError(f"Cannot convert {type(v_original)!r} to {t!r}, got as far as {type(v)!r}")
     return v
 
 
