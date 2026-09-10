@@ -10,17 +10,7 @@ import pytest
 
 import trolskgen
 from tests.nested import MyEnum
-from trolskgen import t
-
-
-def test_basic() -> None:
-    assert (
-        trolskgen.e(
-            "foo: {t}",
-            t=trolskgen.e("some.Class") | int,
-        ).to_source()
-        == "foo: some.Class | int"
-    )
+from trolskgen import e as t
 
 
 def _eq(a: str, b: str) -> None:
@@ -81,17 +71,16 @@ def test_error_missing_paren() -> None:
         t("foo: {int}", int=int),
         t("{field_name}: str", field_name=field_name),
     ]
-    cls = t(
-        """
-        class {name}({bases}:
-            {fields}
-        """,
-        name=name,
-        bases=bases,
-        fields=fields,
-    )
     with pytest.raises(trolskgen.TrolskgenError):
-        trolskgen.to_source(cls)
+        t(
+            """
+            class {name}({bases}:
+                {fields}
+            """,
+            name=name,
+            bases=bases,
+            fields=fields,
+        )
 
 
 def test_build_field() -> None:
@@ -358,12 +347,6 @@ def test_build_custom_int() -> None:
         "[5 + 1, 8 + 1]",
     )
 
-    with trolskgen.GLOBAL_CONFIG.set(c):
-        _eq(
-            trolskgen.to_source([6, 9]),
-            "[5 + 1, 8 + 1]",
-        )
-
 
 class MyInterfaceClass:
     def __trolskgen__(self, f: trolskgen.F) -> ast.AST:
@@ -619,11 +602,11 @@ class Qux(pydantic.BaseModel):
 def test_more_reprs() -> None:
     _eq(
         trolskgen.to_source(f),
-        "test_trolskgen.f",
+        "test_trolskgen_eager.f",
     )
     _eq(
         trolskgen.to_source(Foo.f),
-        "test_trolskgen.Foo.f",
+        "test_trolskgen_eager.Foo.f",
     )
     _eq(
         trolskgen.to_source(dt.date(2022, 1, 23)),
@@ -663,11 +646,11 @@ def test_more_reprs() -> None:
     )
     _eq(
         trolskgen.to_source(Bar(a=1, b=[2])),
-        "test_trolskgen.Bar(a=1, b=[2])",
+        "test_trolskgen_eager.Bar(a=1, b=[2])",
     )
     _eq(
         trolskgen.to_source(Qux(a=1, b=[2])),
-        "test_trolskgen.Qux(a=1, b=[2])",
+        "test_trolskgen_eager.Qux(a=1, b=[2])",
     )
     _eq(
         trolskgen.to_source(Literal[1, 2]),

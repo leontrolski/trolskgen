@@ -11,7 +11,7 @@ from typing import Any, Callable, Union
 class TrolskgenError(RuntimeError): ...
 
 
-F = Callable[[Any], "Module"]
+F = Callable[[Any], ast.Module]
 Converter = Callable[[Any, F], ast.Module | ast.expr | None]
 
 
@@ -67,16 +67,16 @@ GLOBAL_CONFIG: ContextVar[Config] = ContextVar("GLOBAL_CONFIG", default=Config()
 class Module(ast.Module):
     """ast.Module with pprint methods"""
 
-    def pformat(self) -> str:
+    def to_source(self) -> str:
         return ast.unparse(self)
 
     def pprint(self) -> None:
-        print(self.pformat())
+        print(self.to_source())
 
     def __repr__(self) -> str:
-        return f"<ast.Module {self.pformat()!r}>"
+        return f"<ast.Module {self.to_source()!r}>"
 
-    def __or__(self, value: Any) -> type[Any]:
+    def __or__(self, value: object) -> type[object]:
         return Union[self, value]  # type: ignore[return-value]
 
 
@@ -87,7 +87,7 @@ def _upcast(node: ast.Module | ast.expr) -> Module:
     return Module(body=node.body, type_ignores=node.type_ignores)
 
 
-def to_ast(o: Any, *, config: Config | None = None) -> Module:
+def to_ast(o: object, *, config: Config | None = None) -> Module:
     if config is None:
         config = GLOBAL_CONFIG.get()
     f = partial(to_ast, config=config)
@@ -98,7 +98,7 @@ def to_ast(o: Any, *, config: Config | None = None) -> Module:
     raise TrolskgenError(f"No converter matchers: {o!r}")
 
 
-def e(s: str, **kwargs: Any) -> Module:
+def e(s: str, **kwargs: object) -> Module:
     """Like `trolskgen.t`, but eagerly converts to `ast`."""
     from trolskgen import templates
 
@@ -119,13 +119,13 @@ def sh(cmd: list[str], stdin: str) -> str:
 
 
 def to_source(
-    o: Any,
+    o: object,
     *,
     config: Config | None = None,
     ruff_format: bool = False,
     ruff_line_length: int = -1,
 ) -> str:
-    source = ast.unparse(to_ast(o, config=config))
+    source = to_ast(o, config=config).to_source()
     if ruff_format:
         line_length_args = [] if ruff_line_length == -1 else ["--line-length", str(ruff_line_length)]
         source = sh(["ruff", "format", "-"] + line_length_args, source)

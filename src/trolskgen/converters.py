@@ -19,7 +19,7 @@ ASTValue = ast.AST | list[ast.stmt] | str
 T = TypeVar("T", bound=ASTValue)
 
 
-def converter_ast(o: Any, f: core.F) -> ast.Module | ast.expr | None:
+def converter_ast(o: object, f: core.F) -> ast.Module | ast.expr | None:
     if not isinstance(o, ast.Module | ast.expr):
         return None
     return o
@@ -201,11 +201,11 @@ def converter_template(o: Any, f: core.F) -> ast.Module | None:
     o = templates.Template.from_templatelike(o)
     parts = list[str]()
     map = NameNodeMap()
-    separator: str = ", "
+    separator = "\n"
     for part in o.parts:
         if isinstance(part, str):
             parts.append(part)
-            separator = _trailing_indent(part)
+            separator = _separator(part)
         else:
             assert isinstance(part, templates.Interpolation)
             if part.format_spec == "*":
@@ -240,6 +240,17 @@ def converter_template(o: Any, f: core.F) -> ast.Module | None:
 
 
 # `converter_template` replacement helpers
+
+
+def _separator(part: str) -> str:
+    lines = part.splitlines()
+    if all(c == " " for c in lines[-1]):
+        try:
+            appears_to_be_in_list = lines[-2][-1] in {",", ")"}
+        except IndexError:
+            appears_to_be_in_list = False
+        return "," if appears_to_be_in_list else "\n" + lines[-1]
+    return ","
 
 
 class NameNodeMap:
@@ -332,22 +343,6 @@ def _named(v: ast.AST) -> _Named | None:
     if isinstance(v, ast.AnnAssign) and isinstance(v.target, ast.Name):
         return _Named(v.target.id, v.annotation, v.value)
     return None
-
-
-def _trailing_indent(part: str) -> str:
-    """Get the trailing indent of a part.
-
-    If previous to the newline, there was a comma, assume we're in a
-    comma separated list.
-    """
-    lines = part.splitlines()
-    try:
-        trailing_comma = lines[-2][-1] == ","
-    except IndexError:
-        trailing_comma = False
-    if all(c == " " for c in lines[-1]) and not trailing_comma:
-        return "\n" + lines[-1]
-    return ", "
 
 
 def _ast_replace(node: ast.AST, map: NameNodeMap) -> None:

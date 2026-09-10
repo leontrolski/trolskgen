@@ -6,7 +6,7 @@ from string import Formatter
 
 if sys.version_info >= (3, 14):
     from string import templatelib
-from typing import Any, Self, Union
+from typing import Self, Union
 
 
 class TemplateError(RuntimeError): ...
@@ -14,7 +14,7 @@ class TemplateError(RuntimeError): ...
 
 @dataclass(frozen=True)
 class Interpolation:
-    value: Any
+    value: object
     expression: str
     format_spec: str | None
 
@@ -26,16 +26,17 @@ class Composite(tuple[object]): ...
 class Template:
     parts: tuple[str | Interpolation, ...]
 
-    def __or__(self, value: Any) -> type[Any]:
+    def __or__(self, value: object) -> type[object]:
         return Union[self, value]  # type: ignore[return-value]
 
     @classmethod
-    def from_str(cls, s: str, **kwargs: Any) -> Self:
+    def from_str(cls, s: str, **kwargs: object) -> Self:
         parts = list[str | Interpolation]()
         for literal_text, field_name, format_spec, _conversion in Formatter().parse(s):
             if literal_text:
                 parts.append(literal_text)
             if field_name is not None:
+                value: object
                 if "," in field_name:
                     for sub_field_name in field_name.split(","):
                         if sub_field_name not in kwargs:
