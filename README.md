@@ -19,7 +19,7 @@ Easily _compose_ types/values/string-templates/AST-nodes, then convert to source
     "foo: {t}",
     t=trolskgen.e("some.Class") | int,
 )</pre></code></td>
-            <td><pre><code>foo: some.Class | str</pre></code></td>
+            <td><pre><code>foo: some.Class | int</pre></code></td>
         </tr>
         <tr>
             <td><pre><code>trolskgen.e(
