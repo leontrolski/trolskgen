@@ -1,7 +1,24 @@
-from trolskgen.core import Config as Config
-from trolskgen.core import F as F
-from trolskgen.core import TrolskgenError as TrolskgenError
-from trolskgen.core import to_ast as to_ast
-from trolskgen.core import to_source as to_source
-from trolskgen.templates import Template as Template
-from trolskgen.templates import t as t
+from trolskgen.core import Config
+from trolskgen.core import F
+from trolskgen.core import TrolskgenError
+from trolskgen.core import to_ast
+from trolskgen.core import to_source
+from trolskgen.core import e
+from trolskgen.core import GLOBAL_CONFIG
+from trolskgen.core import Module as ASTModule
+from trolskgen.templates import Template
+from trolskgen.templates import t
+
+
+__all__ = [
+    "ASTModule",
+    "Config",
+    "e",
+    "F",
+    "GLOBAL_CONFIG",
+    "t",
+    "Template",
+    "to_ast",
+    "to_source",
+    "TrolskgenError",
+]

@@ -60,24 +60,24 @@ class Template:
         @classmethod
         def from_templatelike(cls, t: str | templatelib.Template | Self) -> Self:
             if isinstance(t, str):
-                return Template.from_str(t)
+                return cls.from_str(t)
             if isinstance(t, Template):
                 return t
             assert isinstance(t, templatelib.Template)
-            out = Template([])
+            parts = list[str | Interpolation]()
             for part in t:
                 if isinstance(part, str):
-                    out.parts.append(part)
+                    parts.append(part)
                 else:
                     assert isinstance(part, templatelib.Interpolation)
-                    out.parts.append(
+                    parts.append(
                         Interpolation(
                             value=part.value,
                             expression=part.expression,
                             format_spec=part.format_spec,
                         )
                     )
-            return out
+            return cls(tuple(parts))
     else:
 
         @classmethod

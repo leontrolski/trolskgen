@@ -18,13 +18,13 @@ def _eq(a: str, b: str) -> None:
 
 
 def test_config() -> None:
-    def _1(o: Any, f: trolskgen.F) -> ast.AST | None:
+    def _1(o: Any, f: trolskgen.F) -> ast.Module | None:
         return None
 
-    def _2(o: Any, f: trolskgen.F) -> ast.AST | None:
+    def _2(o: Any, f: trolskgen.F) -> ast.Module | None:
         return None
 
-    def _3(o: Any, f: trolskgen.F) -> ast.AST | None:
+    def _3(o: Any, f: trolskgen.F) -> ast.Module | None:
         return None
 
     c = trolskgen.Config(converters=[])
@@ -337,7 +337,7 @@ def test_imports() -> None:
 
 
 def test_build_custom_int() -> None:
-    def custom_int_converter(o: Any, f: trolskgen.F) -> ast.AST | None:
+    def custom_int_converter(o: Any, f: trolskgen.F) -> ast.Module | None:
         if not isinstance(o, int):
             return None
         return f(t(f"{o - 1} + 1"))
@@ -347,6 +347,12 @@ def test_build_custom_int() -> None:
         trolskgen.to_source([6, 9], config=c),
         "[5 + 1, 8 + 1]",
     )
+
+    with trolskgen.GLOBAL_CONFIG.set(c):
+        _eq(
+            trolskgen.to_source([6, 9]),
+            "[5 + 1, 8 + 1]",
+        )
 
 
 class MyInterfaceClass:

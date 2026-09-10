@@ -1,28 +1,18 @@
 from __future__ import annotations
 
 import ast
+from contextvars import ContextVar
 import subprocess
 from dataclasses import dataclass, field
-from functools import cache, partial, wraps
-from typing import Any, Callable
+from functools import cache, partial
+from typing import Any, Callable, Union
 
 
 class TrolskgenError(RuntimeError): ...
 
 
-F = Callable[[Any], ast.AST]
-Converter = Callable[[Any, F], ast.AST | None]
-
-
-def upcast_expr(converter: Converter) -> Converter:
-    @wraps(converter)
-    def inner(o: Any, f: F) -> ast.AST | None:
-        out = converter(o, f)
-        if isinstance(out, ast.expr):
-            return ast.Module(body=[ast.Expr(value=out)], type_ignores=[])
-        return out
-
-    return inner
+F = Callable[[Any], "Module"]
+Converter = Callable[[Any, F], ast.Module | ast.expr | None]
 
 
 @cache
@@ -71,15 +61,49 @@ class Config:
         return out
 
 
-def to_ast(o: Any, *, config: Config | None = None) -> ast.AST:
+GLOBAL_CONFIG: ContextVar[Config] = ContextVar("GLOBAL_CONFIG", default=Config())
+
+
+class Module(ast.Module):
+    """ast.Module with pprint methods"""
+
+    def pformat(self) -> str:
+        return ast.unparse(self)
+
+    def pprint(self) -> None:
+        print(self.pformat())
+
+    def __repr__(self) -> str:
+        return f"<ast.Module {self.pformat()!r}>"
+
+    def __or__(self, value: Any) -> type[Any]:
+        return Union[self, value]  # type: ignore[return-value]
+
+
+def _upcast(node: ast.Module | ast.expr) -> Module:
+    if isinstance(node, ast.expr):
+        return Module(body=[ast.Expr(value=node)], type_ignores=[])
+
+    return Module(body=node.body, type_ignores=node.type_ignores)
+
+
+def to_ast(o: Any, *, config: Config | None = None) -> Module:
     if config is None:
-        config = Config()
+        config = GLOBAL_CONFIG.get()
     f = partial(to_ast, config=config)
     for converter in config.converters:
         if (node := converter(o, f)) is not None:
-            return node
+            return _upcast(node)
 
     raise TrolskgenError(f"No converter matchers: {o!r}")
+
+
+def e(s: str, **kwargs: Any) -> Module:
+    """Like `trolskgen.t`, but eagerly converts to `ast`."""
+    from trolskgen import templates
+
+    template = templates.Template.from_str(s, **kwargs)
+    return to_ast(template, config=GLOBAL_CONFIG.get())
 
 
 def sh(cmd: list[str], stdin: str) -> str:

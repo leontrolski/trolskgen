@@ -141,20 +141,23 @@ class MySpecialClass(int, list, float):
 | Building templates |
 |---|
 | `trolskgen.t(s: str, **kwargs: Any) -> trolskgen.templates.Template` |
+| `trolskgen.e(s: str, **kwargs: Any) -> trolskgen.ASTModule` |
 
 Creates source templates. If you use the format string `:*`, it will splat in place - see above: `{bases:*}`, `{fields:*}`
+
+`e` is for "eager" - this might be preferable to use, otherwise error messages can become pretty inscrutable.
 
 _This is redundant as of Python 3.14 - see above._
 
 | Converting to AST/source|
 |---|
-| `trolskgen.to_ast(o: Any, *, config: Config) -> ast.AST` |
+| `trolskgen.to_ast(o: Any, *, config: Config) -> trolskgen.ASTModule` |
 | `trolskgen.to_source(o: Any, *, config: Config, ruff_format: bool, ruff_line_length: int) -> str` |
 
 Try to convert `o` into an `ast.AST`/`str` representation.
 
 The following are special cases for the value of `o`:
-- `ast.AST` nodes - these just get passed straight back out.
+- `ast.Module | ast.expr` nodes - these just get passed straight back out.
 - `trolskgen.templates.Template` or `string.templatelib.Template` - these get parsed as Python code.
 
 `trolskgen` will generate sensible ASTs, for the following types:
@@ -195,7 +198,7 @@ For example:
 
 ```python
 class MyInterfaceClass:
-    def __trolskgen__(self, f: trolskgen.F) -> ast.AST:
+    def __trolskgen__(self, f: trolskgen.F) -> ast.Module:
         return f(t("MyInterfaceClass({values:*})", values=[1, 2, 3]))
 
 trolskgen.to_source(MyInterfaceClass()) == "MyInterfaceClass(1, 2, 3)"
@@ -209,7 +212,7 @@ class MyJustName:
     a: str
 
     @classmethod
-    def __trolskgen_cls__(cls, f: trolskgen.F) -> ast.AST:
+    def __trolskgen_cls__(cls, f: trolskgen.F) -> ast.Module:
         return f(t("Foo"))
 
 trolskgen.to_source(MyJustName("bar")) == "Foo(a='bar')"
@@ -224,13 +227,20 @@ If you don't own the class, you can build a `trolskgen.Config` with a custom `Co
 For example, if you for some reason wanted to render all ints in the form `x + 1`, you could:
 
 ```python
-def custom_int_converter(o: Any, f: trolskgen.F) -> ast.AST | None:
+def custom_int_converter(o: Any, f: trolskgen.F) -> ast.Module | None:
     if not isinstance(o, int):
         return None
     return f(t(f"{o - 1} + 1"))
 
 config = trolskgen.Config().prepend_converter(custom_int_converter)
 trolskgen.to_source([6, 9], config=config) == "[5 + 1, 8 + 1]"
+```
+
+You can also set a global `trolskgen.GLOBAL_CONFIG` [`ContextVar`](https://docs.python.org/3/library/contextvars.html).
+
+```python
+with trolskgen.GLOBAL_CONFIG.set(config):
+    trolskgen.to_source([6, 9]) == "[5 + 1, 8 + 1]"
 ```
 
 # Development

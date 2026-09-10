@@ -19,14 +19,13 @@ ASTValue = ast.AST | list[ast.stmt] | str
 T = TypeVar("T", bound=ASTValue)
 
 
-def converter_ast(o: Any, f: core.F) -> ast.AST | None:
-    if not isinstance(o, ast.AST):
+def converter_ast(o: Any, f: core.F) -> ast.Module | ast.expr | None:
+    if not isinstance(o, ast.Module | ast.expr):
         return None
     return o
 
 
-@core.upcast_expr
-def converter_simple(o: Any, f: core.F) -> ast.AST | None:
+def converter_simple(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     if isinstance(o, int | float | str | bool | NoneType):
         return ast.Constant(value=o)
     if isinstance(o, list):
@@ -48,8 +47,7 @@ def converter_simple(o: Any, f: core.F) -> ast.AST | None:
 DONT_PREFIX_WITH_MODULE = {"builtins", "typing"}
 
 
-@core.upcast_expr
-def converter_types_and_functions(o: Any, f: core.F) -> ast.AST | None:
+def converter_types_and_functions(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     from trolskgen import t
 
     if isinstance(o, type) or inspect.isfunction(o):
@@ -66,8 +64,7 @@ class FieldMissing: ...
 FIELD_MISSING = FieldMissing()
 
 
-@core.upcast_expr
-def converter_common(o: Any, f: core.F) -> ast.AST | None:
+def converter_common(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     from trolskgen import t
 
     if o is dt.UTC:
@@ -123,8 +120,7 @@ def converter_common(o: Any, f: core.F) -> ast.AST | None:
     return None
 
 
-@core.upcast_expr
-def converter_pydantic(o: Any, f: core.F) -> ast.AST | None:
+def converter_pydantic(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     import annotated_types
     import pydantic
 
@@ -157,8 +153,7 @@ def converter_pydantic(o: Any, f: core.F) -> ast.AST | None:
     return None
 
 
-@core.upcast_expr
-def converter_typeform(o: Any, f: core.F) -> ast.AST | None:
+def converter_typeform(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     from trolskgen import t
 
     if o is Annotated:
@@ -180,8 +175,7 @@ def converter_typeform(o: Any, f: core.F) -> ast.AST | None:
     return None
 
 
-@core.upcast_expr
-def converter_interface(o: Any, f: core.F) -> ast.AST | None:
+def converter_interface(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     if isinstance(o, type):
         if hasattr(o, "__trolskgen_cls__"):
             return o.__trolskgen_cls__(f)  # type: ignore
@@ -200,7 +194,7 @@ def _splat(v: object) -> list[object]:
     raise core.TrolskgenError(f"Can only splat lists/dicts of values, not: {v!r}")
 
 
-def converter_template(o: Any, f: core.F) -> ast.AST | None:
+def converter_template(o: Any, f: core.F) -> ast.Module | None:
     if not isinstance(o, templates.TemplateLike):
         return None
 
@@ -314,7 +308,7 @@ def _downcast(t: type[T], v: ASTValue) -> T:
         elif isinstance(v, ast.Name):
             v = v.id
         elif isinstance(v, ast.Constant):
-            v = v.value
+            v = v.value  # type: ignore[assignment]
         elif isinstance(v, str) and _is_instance(ast.Name("_"), t):
             v = ast.Name(id=v)  # actually an upcast, hence the extra check to avoid endless loop
         else:

@@ -1,5 +1,5 @@
 # Copy of /Users/oli.russell/src/trolskgen/.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/ast.pyi
-
+# ruff: noqa
 from __future__ import annotations
 import os
 import sys

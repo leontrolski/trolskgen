@@ -1,6 +1,6 @@
 [project]
 name = "trolskgen"
-version = "0.0.22"
+version = "0.0.23"
 description = "Cute Python codegen"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -22,11 +22,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest==8.3.5",
-  "ruff==0.11.2",
-  "mypy==1.15.0",
-  "rich==14.0.0",
-  "pydantic==2.11.7",
+  "pytest==8.*",
+  "ruff==0.11.*",
+  "mypy==1.*",
+  "rich==14.*",
+  "pydantic==2.*",
 ]
 
 [project.urls]

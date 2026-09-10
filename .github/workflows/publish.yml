@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment:
+      name: pypi
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+      - run: uv build
+      - run: uv publish
