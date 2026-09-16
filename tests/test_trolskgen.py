@@ -1,5 +1,6 @@
 import ast
 import datetime as dt
+import decimal
 import textwrap
 import zoneinfo
 from dataclasses import dataclass, field
@@ -688,6 +689,10 @@ def test_more_reprs() -> None:
     _eq(
         trolskgen.to_source(trolskgen.t("...")),
         "...",
+    )
+    _eq(
+        trolskgen.to_source(decimal.Decimal("1.234")),
+        "decimal.Decimal('1.234')",
     )
 
 

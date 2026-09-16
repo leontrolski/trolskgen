@@ -134,6 +134,7 @@ The following are special cases for the value of `o`:
 - `dt.datetime`
 - `dt.date`
 - `enum.Enum`
+- `decimal.Decimal`
 - `dataclass`
 - `Annotated`, `T | U`, etc.
 - `pydantic.BaseModel`

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import datetime as dt
+import decimal
 import enum
 from functools import cache
 import inspect
@@ -107,6 +108,8 @@ def converter_common(o: Any, f: core.F) -> ast.Module | ast.expr | None:
         return f(t("dt.timedelta({parts:*})", parts=parts))
     if isinstance(o, enum.Enum):
         return f(t("{enum}.{name}", enum=type(o), name=t(o.name)))
+    if isinstance(o, decimal.Decimal):
+        return f(t("decimal.Decimal({value})", value=str(o)))
     if is_dataclass(o):
         args = list[ast.AST]()
         for field in fields(o):
