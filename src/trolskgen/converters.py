@@ -159,6 +159,16 @@ def converter_pydantic(o: Any, f: core.F) -> ast.Module | ast.expr | None:
 def converter_typeform(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     from trolskgen import t
 
+    # Convert eg. `Annotated[int, {"__trolskgen__": "foo.MySpecialInt"}]`
+    if get_origin(o) is Annotated:
+        for arg in get_args(o):
+            if (
+                isinstance(arg, dict)
+                and (override := arg.get("__trolskgen__")) is not None
+                and isinstance(override, str)
+            ):
+                return f(t(override))
+
     if o is Annotated:
         return f(t("Annotated"))
     if o is Literal:

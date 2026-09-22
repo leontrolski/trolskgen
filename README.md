@@ -186,6 +186,14 @@ Note that we use `f` to recursively call `trolskgen.to_ast(...)` while preservin
 
 <hr>
 
+You can do simple overrides with a `dict` in `Annotated`, for example:
+
+```python
+MySpecialInt = Annotated[int, {"__trolskgen__": "my_module.MySpecialInt"}]
+```
+
+<hr>
+
 If you don't own the class, you can build a `trolskgen.Config` with a custom `Converter` function.
 
 For example, if you for some reason wanted to render all ints in the form `x + 1`, you could:

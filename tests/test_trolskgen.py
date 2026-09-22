@@ -694,6 +694,10 @@ def test_more_reprs() -> None:
         trolskgen.to_source(decimal.Decimal("1.234")),
         "decimal.Decimal('1.234')",
     )
+    _eq(
+        trolskgen.to_source(Annotated[int, {"__trolskgen__": "foo.MySpecialInt"}]),
+        "foo.MySpecialInt",
+    )
 
 
 def test_nested_attr() -> None:
