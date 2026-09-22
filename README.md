@@ -186,10 +186,10 @@ Note that we use `f` to recursively call `trolskgen.to_ast(...)` while preservin
 
 <hr>
 
-You can do simple overrides with a `dict` in `Annotated`, for example:
+You can do simple overrides with a `tuple` in `Annotated`, for example:
 
 ```python
-MySpecialInt = Annotated[int, {"__trolskgen__": "my_module.MySpecialInt"}]
+MySpecialInt = Annotated[int, ("__trolskgen__", "my_module.MySpecialInt")]
 ```
 
 <hr>

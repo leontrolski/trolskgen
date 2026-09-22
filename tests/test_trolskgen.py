@@ -695,7 +695,7 @@ def test_more_reprs() -> None:
         "decimal.Decimal('1.234')",
     )
     _eq(
-        trolskgen.to_source(Annotated[int, {"__trolskgen__": "foo.MySpecialInt"}]),
+        trolskgen.to_source(Annotated[int, ("__trolskgen__", "foo.MySpecialInt")]),
         "foo.MySpecialInt",
     )
 
