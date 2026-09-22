@@ -192,6 +192,8 @@ You can do simple overrides with a `tuple` in `Annotated`, for example:
 MySpecialInt = Annotated[int, ("__trolskgen__", "my_module.MySpecialInt")]
 ```
 
+_Consider how `Annotated[Annotated[int, 1], 2] == Annotated[int, 1, 2]`, to preserve the `2` annotation, every annotation after the trolskgen one is kept_.
+
 <hr>
 
 If you don't own the class, you can build a `trolskgen.Config` with a custom `Converter` function.

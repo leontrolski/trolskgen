@@ -700,11 +700,15 @@ def test_more_reprs() -> None:
     )
     _eq(
         trolskgen.to_source(Annotated[int, MyJustName, ("__trolskgen__", "foo.MySpecialInt")]),
-        "Annotated[foo.MySpecialInt, Foo]",
+        "foo.MySpecialInt",
     )
     _eq(
         trolskgen.to_source(Annotated[int, MyJustName, ("__trolskgen__", "foo.MySpecialInt"), MyJustName]),
-        "Annotated[foo.MySpecialInt, Foo, Foo]",
+        "Annotated[foo.MySpecialInt, Foo]",
+    )
+    _eq(
+        trolskgen.to_source(Annotated[Annotated[int, MyJustName, ("__trolskgen__", "foo.MySpecialInt")], MyJustName]),
+        "Annotated[foo.MySpecialInt, Foo]",
     )
 
 
