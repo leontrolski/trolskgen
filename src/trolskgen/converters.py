@@ -10,7 +10,7 @@ import textwrap
 import zoneinfo
 from dataclasses import MISSING, dataclass, fields, is_dataclass
 from types import EllipsisType, NoneType, UnionType
-from typing import Annotated, Any, Callable, Literal, TypeVar, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Callable, Literal, TypeAliasType, TypeVar, Union, cast, get_args, get_origin
 
 from typing_extensions import TypeIs
 
@@ -158,6 +158,9 @@ def converter_pydantic(o: Any, f: core.F) -> ast.Module | ast.expr | None:
 
 def converter_typeform(o: Any, f: core.F) -> ast.Module | ast.expr | None:
     from trolskgen import t
+
+    if isinstance(o, TypeAliasType):
+        return f(o.__value__)
 
     # Convert eg. `Annotated[int, ("__trolskgen__": "foo.MySpecialInt")]`
     if get_origin(o) is Annotated:
