@@ -698,6 +698,14 @@ def test_more_reprs() -> None:
         trolskgen.to_source(Annotated[int, ("__trolskgen__", "foo.MySpecialInt")]),
         "foo.MySpecialInt",
     )
+    _eq(
+        trolskgen.to_source(Annotated[int, MyJustName, ("__trolskgen__", "foo.MySpecialInt")]),
+        "Annotated[foo.MySpecialInt, Foo]",
+    )
+    _eq(
+        trolskgen.to_source(Annotated[int, MyJustName, ("__trolskgen__", "foo.MySpecialInt"), MyJustName]),
+        "Annotated[foo.MySpecialInt, Foo, Foo]",
+    )
 
 
 def test_nested_attr() -> None:

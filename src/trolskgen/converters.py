@@ -161,8 +161,10 @@ def converter_typeform(o: Any, f: core.F) -> ast.Module | ast.expr | None:
 
     # Convert eg. `Annotated[int, ("__trolskgen__": "foo.MySpecialInt")]`
     if get_origin(o) is Annotated:
-        for arg in get_args(o):
+        for i, arg in enumerate((args_ := get_args(o))):
             if isinstance(arg, tuple) and len(arg) == 2 and (arg[0] == "__trolskgen__") and isinstance(arg[1], str):
+                if len(args_) > 2:
+                    return f(Annotated[f(t(arg[1])), *args_[1:i], *args_[i+1:]])
                 return f(t(arg[1]))
 
     if o is Annotated:
