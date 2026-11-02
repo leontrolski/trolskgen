@@ -836,3 +836,20 @@ def test_many_statements() -> None:
             return 42
         """,
     )
+
+
+def test_nested_blocks() -> None:
+    _eq(
+        trolskgen.e(
+            "a = f(1, {b})\n{inner_ifs:*}",
+            b=2,
+            inner_ifs=[trolskgen.e("if c:\n  2"), trolskgen.e("if c:\n  2")],
+        ).to_source(),
+        """
+        a = f(1, 2)
+        if c:
+            2
+        if c:
+            2
+        """,
+    )

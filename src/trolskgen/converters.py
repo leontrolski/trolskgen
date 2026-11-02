@@ -259,13 +259,9 @@ def converter_template(o: Any, f: core.F) -> ast.Module | None:
 
 def _separator(part: str) -> str:
     lines = part.splitlines()
-    if all(c == " " for c in lines[-1]):
-        try:
-            appears_to_be_in_list = lines[-2][-1] in {",", ")"}
-        except IndexError:
-            appears_to_be_in_list = False
-        return "," if appears_to_be_in_list else "\n" + lines[-1]
-    return ","
+    indent = lines[-1] if all(c == " " for c in lines[-1]) else ""
+    separator = "," if (part.strip() and part.strip()[-1] in "(,[") else "\n"
+    return separator + indent
 
 
 class NameNodeMap:
